@@ -1,21 +1,22 @@
 <script setup lang="ts">
 import { ElMessage, ElMessageBox } from "element-plus";
-import { computed, ref, shallowRef } from "vue";
+import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 // import OrderDlg, { OrderFunc } from "../server/components/OrderDlg.vue";
-import { deleteRecord, OrderRecordItem, OrderRecordStatus, OrderRecordStatusTags, requestRecordList, requestRecordOrderPdf } from "/@/api/server";
+import { checkRecord, deleteRecord, OrderRecordItem, OrderRecordStatus, requestRecordList, requestRecordOrderPdf } from "/@/api/server";
 
 const router = useRouter();
 const loading = ref(false);
-const recordList = shallowRef<OrderRecordItem[]>([]);
+const recordList = ref<OrderRecordItem[]>([]);
 
 function fetchRecordList() {
   loading.value = true;
   requestRecordList()
     .then(res => {
-      recordList.value = res || [];
-      recordList.value.forEach(item => {
-        item.statusTag = OrderRecordStatusTags[item.status];
+      recordList.value = (res || []).map(item => {
+        const recordItem = new OrderRecordItem();
+        Object.assign(recordItem, item);
+        return recordItem;
       });
     })
     .finally(() => {
@@ -73,6 +74,23 @@ function oneMoreOrder(record: OrderRecordItem) {
   router.push("/server/detail?recordId=" + record.id);
 }
 
+function checkPassOrder(record: OrderRecordItem) {
+  ElMessageBox.confirm("确认提交审核吗？", "温馨提示")
+    .then(() => {
+      checkRecord({
+        id: record.id,
+        status: OrderRecordStatus.SUBMIT
+      })
+        .then(() => {
+          ElMessage.success("提交审核成功！");
+          record.status = OrderRecordStatus.SUBMIT;
+        })
+        .catch(() => {
+          ElMessage.error("操作失败，请联系管理员！");
+        });
+    })
+    .catch(() => {});
+}
 // const order: OrderFunc = async function (customer, done) {
 //   if (!record2copy.value) {
 //     done(false);
@@ -105,7 +123,10 @@ function oneMoreOrder(record: OrderRecordItem) {
     <el-card class="record__list" v-for="record of activeRecordList" :key="record.id">
       <el-row :gutter="20">
         <el-col :xs="12" :span="6">
-          <el-image :src="record.fpic"></el-image>
+          <vue-fixed-ratio :width="1" :height="1">
+            <!-- <img :src="serverDetail.pic" style="width: 100%; height: 100%; object-fit: contain" /> -->
+            <el-image :src="record.fpic" fit="contain"></el-image>
+          </vue-fixed-ratio>
         </el-col>
         <el-col :xs="12" :span="9">
           <div class="record__list__server">
@@ -136,6 +157,7 @@ function oneMoreOrder(record: OrderRecordItem) {
             <el-button type="primary" :loading="loadingPdf" @click="openOrderList(record)">查看报价单</el-button>
             <el-button type="danger" :loading="loadingDelete" @click="deleteRecordItem(record)">删除记录</el-button>
             <el-button type="success" @click="oneMoreOrder(record)">再来一单</el-button>
+            <el-button v-if="record.status === OrderRecordStatus.SAVE_LOCAL" type="warning" @click="checkPassOrder(record)">提交审核</el-button>
           </div>
         </el-col>
       </el-row>

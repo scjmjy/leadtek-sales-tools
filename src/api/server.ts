@@ -93,10 +93,13 @@ export const OrderRecordStatusText = {
   [OrderRecordStatus.CHECK_PASS]: "审核通过",
   [OrderRecordStatus.CHECK_FAIL]: "审核未通过"
 };
-export const OrderRecordStatusTags = {
+export const OrderRecordStatusTags: Record<
+  number,
+  { label: string; type: "" | "success" | "warning" | "info" | "danger" }
+> = {
   [OrderRecordStatus.SAVE_LOCAL]: {
     label: OrderRecordStatusText[OrderRecordStatus.SAVE_LOCAL],
-    type: "primary"
+    type: "" // primary
   },
   [OrderRecordStatus.SUBMIT]: {
     label: OrderRecordStatusText[OrderRecordStatus.SUBMIT],
@@ -111,14 +114,14 @@ export const OrderRecordStatusTags = {
     type: "danger"
   }
 };
-export interface OrderRecordBase extends CustomerInfo {
+export class OrderRecordBase extends CustomerInfo {
   discount: number; // 折扣
   price: number; // 记录总价
   offer: number; // 折扣总价
   status: OrderRecordStatus; // 记录状态（0：销售保存订单；1：提交PM审核；2：审核通过；3：审核不通过）
   fid: number; // 主机ID
 }
-export interface OrderRecordItem extends OrderRecordBase {
+export class OrderRecordItem extends OrderRecordBase {
   id: number; // 记录ID
   no: string; // 记录号
   fname: string; // 主机名称
@@ -126,7 +129,9 @@ export interface OrderRecordItem extends OrderRecordBase {
   fpic: string;
   components: string[]; // 组件信息列表
   url: string; // 报价单pdf
-  statusTag?: any;
+  get statusTag() {
+    return OrderRecordStatusTags[this.status];
+  }
 }
 export interface ComponentItem extends TempComponent {
   price: number;
@@ -187,6 +192,13 @@ export function requestServerDetail(id: number): Promise<ServerDetail> {
 
 export function recordOrder(order: OrderRecordCreate): Promise<ServerDetail> {
   return http.request("post", "/api/v1/biz/record", order as Object);
+}
+export interface CheckRecord {
+  id: number; // record id
+  status: OrderRecordStatus;
+}
+export function checkRecord(check: CheckRecord): Promise<void> {
+  return http.request("post", " /api/v1/biz/recordcheck", check as Object);
 }
 
 export function requestRecordDetail(id: number): Promise<OrderRecordDetail> {

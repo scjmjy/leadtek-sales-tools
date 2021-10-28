@@ -143,8 +143,8 @@ const version = ref(import.meta.env.PACKAGE_VERSION);
 
 <style lang="scss" scoped>
 .fixed-footer {
-  // margin-top: 20px;
-  margin: 20px -20px 5px;
+  margin-top: 20px;
+  // margin: 20px -20px 5px;
   text-align: center;
   background-color: #efefefc7;
   padding: 5px;
