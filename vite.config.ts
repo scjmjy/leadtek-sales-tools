@@ -23,9 +23,7 @@ const alias: Record<string, string> = {
 const root: string = process.cwd();
 
 export default ({ command, mode }: ConfigEnv): UserConfigExport => {
-  const { VITE_PORT, VITE_PUBLIC_PATH, VITE_PROXY } = warpperEnv(
-    loadEnv(mode, root)
-  );
+  const { VITE_PORT, VITE_PUBLIC_PATH, VITE_PROXY } = warpperEnv(loadEnv(mode, root));
   const prodMock = true;
   return {
     /**
@@ -33,8 +31,7 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
      * /manages/ 可根据项目部署域名的后缀自行填写（全局搜/manages/替换）
      * @default '/'
      */
-    base:
-      process.env.NODE_ENV === "production" ? "/manages/" : VITE_PUBLIC_PATH,
+    base: process.env.NODE_ENV === "production" ? "/" : VITE_PUBLIC_PATH,
     root,
     resolve: {
       alias

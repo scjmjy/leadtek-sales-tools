@@ -1,175 +1,111 @@
 <script setup lang="ts">
-import {
-  ReGithub,
-  ReInfinite,
-  RePie,
-  ReLine,
-  ReBar
-} from "/@/components/ReCharts/index";
-import { useAppStoreHook } from "/@/store/modules/app";
-import { ref, shallowRef, computed, onBeforeMount } from "vue";
+import { shallowRef } from "vue";
+import { useRouter } from "vue-router";
+import { requestLatestRecordList, requestServerTemplates, ServerTemplate, OrderRecordItem, OrderRecordStatusTags } from "../api/server";
 
-const date: Date = new Date();
-let loading = ref<boolean>(true);
-const componentList = shallowRef([]);
+const router = useRouter();
 
-setTimeout(() => {
-  loading.value = !loading.value;
-}, 500);
-
-let greetings = computed(() => {
-  if (date.getHours() >= 0 && date.getHours() < 12) {
-    return "上午阳光明媚，祝你薪水翻倍🌞！";
-  } else if (date.getHours() >= 12 && date.getHours() < 18) {
-    return "下午小风娇好，愿你青春不老😃！";
-  } else {
-    return "折一根天使羽毛，愿拂去您的疲惫烦恼忧伤🌛！";
-  }
+const tempList = shallowRef<ServerTemplate[]>([]);
+requestServerTemplates().then(res => {
+  tempList.value = res || [];
 });
-
-onBeforeMount(() => {
-  if (useAppStoreHook().device === "mobile") {
-    componentList.value = [
-      {
-        width: "20em",
-        title: "GitHub饼图信息",
-        component: RePie
-      },
-      {
-        width: "20em",
-        title: "GitHub折线图信息",
-        component: ReLine
-      },
-      {
-        width: "20em",
-        title: "GitHub柱状图信息",
-        component: ReBar
-      }
-    ];
-  } else {
-    componentList.value = [
-      {
-        width: "43em",
-        title: "GitHub信息",
-        component: ReGithub
-      },
-      {
-        width: "43em",
-        title: "GitHub滚动信息",
-        component: ReInfinite
-      },
-      {
-        width: "28.28em",
-        title: "GitHub饼图信息",
-        component: RePie
-      },
-      {
-        width: "28.28em",
-        title: "GitHub折线图信息",
-        component: ReLine
-      },
-      {
-        width: "28.28em",
-        title: "GitHub柱状图信息",
-        component: ReBar
-      }
-    ];
-  }
+const recordList = shallowRef<OrderRecordItem[]>([]);
+requestLatestRecordList().then(res => {
+  recordList.value = res || [];
+  recordList.value.forEach(item => {
+    item.statusTag = OrderRecordStatusTags[item.status];
+  });
 });
-
-const openDepot = (): void => {
-  window.open("https://github.com/xiaoxian521/vue-pure-admin");
-};
+function onRecordRowClick(row: OrderRecordItem) {
+  router.push("/record?id=" + row.id);
+}
+function chooseTempalte(item: ServerTemplate) {
+  router.push("/server/detail?tempId=" + item.id);
+}
 </script>
 
 <template>
   <div class="welcome">
-    <el-card class="top-content">
-      <div class="left-mark">
-        <img
-          src="https://avatars.githubusercontent.com/u/44761321?s=400&u=30907819abd29bb3779bc247910873e7c7f7c12f&v=4"
-          title="直达仓库地址"
-          @click="openDepot"
-        />
-        <span>{{ greetings }}</span>
-      </div>
-    </el-card>
-
-    <el-space class="space" wrap size="large">
-      <el-skeleton
-        v-for="(item, key) in componentList"
-        :key="key"
-        animated
-        :rows="7"
-        :loading="loading"
-        :class="$style.size"
-        :style="{ width: item.width }"
-      >
-        <template #default>
-          <div
-            :class="['echart-card', $style.size]"
-            :style="{ width: item.width }"
-          >
-            <h4>{{ item.title }}</h4>
-            <component :is="item.component"></component>
-          </div>
-        </template>
-      </el-skeleton>
-    </el-space>
+    <div class="server-template">
+      <div class="server-template__title">模板列表</div>
+      <el-row class="server-template__list" :gutter="20">
+        <el-col :xs="24" :sm="12" :lg="8" :xl="6" v-for="(item, index) of tempList" :key="index" style="padding: 10px">
+          <el-card>
+            <template #header>
+              <div class="card-header">
+                <span>{{ item.name }}</span>
+                <el-button type="text" @click="chooseTempalte(item)">选择</el-button>
+              </div>
+            </template>
+            <img :src="item.pic" style="width: 100%; height: 100%; object-fit: contain" />
+          </el-card>
+        </el-col>
+      </el-row>
+    </div>
+    <div class="my-record">
+      <div class="my-record__title">我的记录</div>
+      <el-table class="my-record__list" :data="recordList" :row-style="{ cursor: 'pointer' }" @row-click="onRecordRowClick">
+        <el-table-column prop="pic" align="center">
+          <template #default="scope">
+            <el-image :src="scope.row.fpic"></el-image>
+          </template>
+        </el-table-column>
+        <el-table-column label="记录号" prop="no" align="center"></el-table-column>
+        <el-table-column label="主机信息" prop="fname" align="center"></el-table-column>
+        <el-table-column label="组件信息" prop="components" align="center">
+          <template #default="scope">
+            <div style="white-space: pre">
+              {{ scope.row.components.join("\n") }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="价格信息" prop="price" align="center"></el-table-column>
+        <el-table-column label="客户信息" prop="name" align="center"></el-table-column>
+        <el-table-column label="状态信息" prop="state" align="center">
+          <template #default="scope">
+            <el-tag size="medium" :type="scope.row.statusTag.type">{{ scope.row.statusTag.label }}</el-tag>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
   </div>
 </template>
 
-<style module scoped>
+<!-- <style module scoped>
 .size {
   height: 335px;
 }
-</style>
+</style> -->
 
 <style lang="scss" scoped>
 .welcome {
   width: 100%;
   height: 100%;
+  .server-template {
+    &__title {
+      font-weight: bold;
+    }
+    &__list {
+      margin-top: 20px;
 
-  .top-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 60px;
-    background: #fff;
-
-    .left-mark {
-      display: flex;
-      align-items: center;
-
-      img {
-        display: block;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        margin-right: 10px;
-        cursor: pointer;
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
       }
 
-      span {
-        font-size: 14px;
+      :deep(.el-card__header) {
+        padding: 5px 20px;
       }
     }
   }
-
-  .space {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-left: 8px;
-    padding: 10px;
-
-    .echart-card {
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
-
-      h4 {
-        margin: 0;
-        padding: 20px;
-      }
+  .my-record {
+    margin-top: 20px;
+    &__title {
+      font-weight: bold;
+    }
+    &__list {
+      margin-top: 20px;
     }
   }
 }

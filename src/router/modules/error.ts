@@ -9,6 +9,7 @@ const errorRouter = {
     icon: "el-icon-position",
     title: "message.hserror",
     showLink: true,
+    invisible: true,
     rank: 7
   },
   children: [

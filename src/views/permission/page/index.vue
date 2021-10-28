@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import { ref, unref } from "vue";
-import { storageSession } from "/@/utils/storage";
+import { storageLocal } from "/@/utils/storage";
 
-let purview = ref<string>(storageSession.getItem("info").username);
+let purview = ref<string>(storageLocal.getItem("info").userName);
 
 function changRole() {
   if (unref(purview) === "admin") {
-    storageSession.setItem("info", {
+    storageLocal.setItem("info", {
       username: "test",
       accessToken: "eyJhbGciOiJIUzUxMiJ9.test"
     });
     window.location.reload();
   } else {
-    storageSession.setItem("info", {
+    storageLocal.setItem("info", {
       username: "admin",
       accessToken: "eyJhbGciOiJIUzUxMiJ9.admin"
     });

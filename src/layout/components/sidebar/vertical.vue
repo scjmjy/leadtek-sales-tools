@@ -60,22 +60,12 @@ onBeforeMount(() => {
 <template>
   <div :class="['sidebar-container', showLogo ? 'has-logo' : '']">
     <Logo v-if="showLogo === '1'" :collapse="isCollapse" />
+    <!-- <router-link to="/record" style="font-size: 18px; padding: 10px 20px">我的记录</router-link> -->
     <el-scrollbar wrap-class="scrollbar-wrapper">
-      <el-menu
-        :default-active="activeMenu"
-        :collapse="isCollapse"
-        unique-opened
-        router
-        :collapse-transition="false"
-        mode="vertical"
-        @select="menuSelect"
-      >
-        <sidebar-item
-          v-for="route in routeStore.wholeRoutes"
-          :key="route.path"
-          :item="route"
-          :base-path="route.path"
-        />
+      <el-menu :default-active="activeMenu" :collapse="isCollapse" unique-opened router :collapse-transition="false" mode="vertical" @select="menuSelect">
+        <template v-for="route in routeStore.wholeRoutes" :key="route.path">
+          <sidebar-item v-if="!route.meta.invisible" :item="route" :base-path="route.path" />
+        </template>
       </el-menu>
     </el-scrollbar>
   </div>

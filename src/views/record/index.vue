@@ -1,0 +1,175 @@
+<script setup lang="ts">
+import { ElMessage, ElMessageBox } from "element-plus";
+import { computed, ref, shallowRef } from "vue";
+import OrderDlg, { OrderFunc } from "../server/components/OrderDlg.vue";
+import { deleteRecord, OrderRecordItem, OrderRecordStatus, OrderRecordStatusTags, recordOrder, requestRecordDetail, requestRecordList, requestRecordOrderPdf } from "/@/api/server";
+
+const loading = ref(false);
+const recordList = shallowRef<OrderRecordItem[]>([]);
+
+function fetchRecordList() {
+  loading.value = true;
+  requestRecordList()
+    .then(res => {
+      recordList.value = res || [];
+      recordList.value.forEach(item => {
+        item.statusTag = OrderRecordStatusTags[item.status];
+      });
+    })
+    .finally(() => {
+      loading.value = false;
+    });
+}
+fetchRecordList();
+
+const activeName = ref<string>("all");
+const activeRecordList = computed(() => {
+  if (activeName.value === "all") {
+    return recordList.value;
+  }
+  return recordList.value.filter(record => OrderRecordStatus[record.status] === activeName.value);
+});
+const loadingPdf = ref(false);
+function openOrderList(record: OrderRecordItem) {
+  loadingPdf.value = true;
+  requestRecordOrderPdf(record.id)
+    .then(res => {
+      window.open(res.url, "_blank");
+    })
+    .catch(() => {
+      ElMessage.error("操作错误，请联系管理员！");
+    })
+    .finally(() => {
+      loadingPdf.value = false;
+    });
+}
+const loadingDelete = ref(false);
+function deleteRecordItem(record: OrderRecordItem) {
+  ElMessageBox.confirm("确定删除此记录吗？", "温馨提示")
+    .then(() => {
+      loadingDelete.value = true;
+      deleteRecord(record.id)
+        .then(() => {
+          ElMessage.success("删除成功");
+          fetchRecordList();
+        })
+        .catch(() => {
+          ElMessage.error("操作错误，请联系管理员！");
+        })
+        .finally(() => {
+          loadingDelete.value = false;
+        });
+    })
+    .catch(() => {});
+}
+
+const showOrderDlg = ref(false);
+const record2copy = ref<OrderRecordItem>();
+function oneMoreOrder(record: OrderRecordItem) {
+  record2copy.value = record;
+  showOrderDlg.value = true;
+}
+
+const order: OrderFunc = async function (customer, done) {
+  if (!record2copy.value) {
+    done(false);
+    return;
+  }
+  try {
+    const recordDetail = await requestRecordDetail(record2copy.value.id);
+    const recordData = Object.assign(recordDetail, customer);
+    await recordOrder(recordData);
+    ElMessage.success("记录成功");
+    fetchRecordList();
+    done(true);
+    showOrderDlg.value = false;
+  } catch (error) {
+    ElMessage.error("操作错误，请联系管理员！");
+    done(false);
+  }
+};
+</script>
+
+<template>
+  <div class="record" v-loading="loading">
+    <el-tabs v-model="activeName" style="display: inline-block">
+      <el-tab-pane label="全部" name="all"></el-tab-pane>
+      <el-tab-pane label="保存记录" :name="OrderRecordStatus[OrderRecordStatus.SAVE_LOCAL]"></el-tab-pane>
+      <el-tab-pane label="待审核" :name="OrderRecordStatus[OrderRecordStatus.SUBMIT]"></el-tab-pane>
+      <el-tab-pane label="审核通过" :name="OrderRecordStatus[OrderRecordStatus.CHECK_PASS]"></el-tab-pane>
+      <el-tab-pane label="审核未通过" :name="OrderRecordStatus[OrderRecordStatus.CHECK_FAIL]"></el-tab-pane>
+    </el-tabs>
+    <el-card class="record__list" v-for="record of activeRecordList" :key="record.id">
+      <el-row :gutter="20">
+        <el-col :span="4">
+          <el-image :src="record.fpic"></el-image>
+        </el-col>
+        <el-col :span="12" :xs="8" :sm="10">
+          <div class="record__list__server">
+            <div class="server-host">{{ record.fname }}</div>
+            <div class="server-components">{{ record.components.join("\n") }}</div>
+          </div>
+        </el-col>
+        <el-col :span="4">
+          <div class="record__list__sales">
+            <div>
+              <div>原价：{{ record.price }} 元</div>
+              <div>折扣：{{ record.discount }} 元</div>
+              <div>总金额：{{ record.offer }} 元</div>
+            </div>
+            <div style="margin-top: 20px">
+              <div>客户：{{ record.name }}</div>
+              <div>联系人：{{ record.contact || "-" }}</div>
+              <div>手机号：{{ record.mobile || "-" }}</div>
+            </div>
+            <div style="margin-top: 20px">
+              <span>状态：</span>
+              <el-tag size="medium" :type="record.statusTag.type">{{ record.statusTag.label }}</el-tag>
+            </div>
+          </div>
+        </el-col>
+        <el-col :span="4" :xs="8" :sm="6">
+          <div class="record__list__action">
+            <el-button type="primary" :loading="loadingPdf" @click="openOrderList(record)">查看报价单</el-button>
+            <el-button type="danger" :loading="loadingDelete" @click="deleteRecordItem(record)">删除记录</el-button>
+            <el-button type="success" @click="oneMoreOrder(record)">再来一单</el-button>
+          </div>
+        </el-col>
+      </el-row>
+    </el-card>
+    <el-empty v-if="activeRecordList.length === 0"></el-empty>
+    <order-dlg v-model="showOrderDlg" :order="order"></order-dlg>
+  </div>
+</template>
+
+<style lang="scss" scoped>
+.record {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  &__list {
+    flex: 1;
+    margin: 10px 0px;
+    overflow-y: auto;
+    &__server {
+      .server-host {
+        color: #6124fc;
+        font-weight: 700;
+      }
+      .server-components {
+        margin-top: 20px;
+        white-space: pre;
+      }
+    }
+    &__action {
+      :deep(.el-button) {
+        margin-left: 0px;
+        width: 100%;
+        &:not(:first-of-type) {
+          margin-top: 10px;
+        }
+      }
+    }
+  }
+}
+</style>

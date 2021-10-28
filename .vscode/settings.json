@@ -12,10 +12,10 @@
   "window.zoomLevel": 1,
   "javascript.updateImportsOnFileMove.enabled": "always",
   "[vue]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "svipas.prettier-plus"
   },
   "[javascript]": {
-    "editor.defaultFormatter": "vscode.typescript-language-features"
+    "editor.defaultFormatter": "svipas.prettier-plus"
   },
   "editor.tabSize": 2,
   "editor.formatOnPaste": true,

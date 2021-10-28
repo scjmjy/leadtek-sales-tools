@@ -1,0 +1,21 @@
+{
+  "Vue3单文件模板": {
+    "prefix": "v3",
+    "body": [
+      "<script setup lang=\"ts\">",
+      "import { ref } from \"vue\";",
+      "import { useRouter } from \"vue-router\";\n",
+      "const router = useRouter();",
+      "</script>\n",
+      "<template>",
+      "\t<div class=\"$1\">\n",
+      "\t</div>",
+      "</template>\n",
+      "<style lang=\"scss\" scoped>",
+      ".$1 {",
+      "}",
+      "</style>"
+    ],
+    "description": "Vue3.0"
+  }
+}

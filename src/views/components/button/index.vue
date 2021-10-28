@@ -1,11 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
-const url = ref(
-  process.env.NODE_ENV === "production"
-    ? "/manages/html/button.html"
-    : "/html/button.html"
-);
+const url = ref(process.env.NODE_ENV === "production" ? "/html/button.html" : "/html/button.html");
 </script>
 
 <template>

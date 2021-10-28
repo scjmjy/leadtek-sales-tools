@@ -149,6 +149,7 @@
     width: 100%;
     height: 62px;
     align-items: center;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 
     .horizontal-header-left {
       display: flex;
@@ -157,12 +158,12 @@
       min-width: 200px;
       align-items: center;
       padding-left: 10px;
-      cursor: pointer;
+      // cursor: pointer;
       transition: all 0.2s ease;
 
-      &:hover {
-        background: $menuHover;
-      }
+      // &:hover {
+      //   background: $menuHover;
+      // }
 
       i {
         font-size: 30px;
@@ -187,7 +188,7 @@
 
     .horizontal-header-right {
       display: flex;
-      min-width: 280px;
+      // min-width: 280px;
       align-items: center;
       color: $navTextColor;
       justify-content: flex-end;
@@ -470,7 +471,7 @@
 
 body[data-layout="vertical"] {
   .fixed-header + .app-main {
-    padding-top: 85px;
+    padding-top: 58px;
   }
 
   .hideSidebar {
@@ -530,7 +531,8 @@ body[data-layout="horizontal"] {
   }
 
   .fixed-header + .app-main {
-    padding-top: 98px;
+    // padding-top: 98px;
+    padding-top: 78px;
   }
 }
 

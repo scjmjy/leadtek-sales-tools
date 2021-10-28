@@ -7,6 +7,7 @@ import { usI18n } from "../src/plugins/i18n";
 import { useTable } from "../src/plugins/vxe-table";
 import { useElementPlus } from "../src/plugins/element-plus";
 import { injectResponsiveStorage } from "/@/utils/storage/responsive";
+import VueFixedRatio from "./components/vue-fixed-ratio.vue";
 
 import "animate.css";
 // 导入公共样式
@@ -28,6 +29,7 @@ getServerConfig(app).then(async config => {
   injectResponsiveStorage(app, config);
   setupStore(app);
   app.use(router).use(useElementPlus).use(useTable).use(usI18n);
+  app.component("vue-fixed-ratio", VueFixedRatio);
   await router.isReady();
   app.mount("#app");
 });

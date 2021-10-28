@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { storageSession } from "/@/utils/storage";
+import { storageLocal } from "/@/utils/storage";
 
-const auth = ref<boolean>(storageSession.getItem("info").username || "admin");
+const auth = ref<boolean>(storageLocal.getItem("info").userName || "admin");
 
 function changRole(value) {
-  storageSession.setItem("info", {
+  storageLocal.setItem("info", {
     username: value,
     accessToken: `eyJhbGciOiJIUzUxMiJ9.${value}`
   });

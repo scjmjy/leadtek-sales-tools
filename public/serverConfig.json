@@ -1,11 +1,11 @@
 {
   "Version": "2.0.0",
-  "Title": "PureAdmin",
+  "Title": "leadtek销售平台",
   "FixedHeader": true,
   "HiddenSideBar": false,
-  "KeepAlive": true,
+  "KeepAlive": false,
   "Locale": "zh",
-  "Layout": "vertical-dark",
+  "Layout": "horizontal-light",
   "MapConfigure": {
     "amapKey": "97b3248d1553172e81f168cf94ea667e",
     "baiduKey": "wTHbkkEweiFqZLKunMIjcrb2RcqNXkhc",

@@ -55,6 +55,7 @@ export type childrenType = {
   children?: childrenType[];
   value: unknown;
   meta?: {
+    invisible?: boolean;
     icon?: string;
     title?: string;
     extraIcon?: {

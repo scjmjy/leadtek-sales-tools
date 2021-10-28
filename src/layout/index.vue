@@ -5,12 +5,9 @@ export default {
     layout() {
       if (!this.$storage.layout) {
         // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        this.$storage.layout = { layout: "vertical-dark" };
+        this.$storage.layout = { layout: "horizontal-light" };
       }
-      if (
-        !this.$storage.routesInStorage ||
-        this.$storage.routesInStorage.length === 0
-      ) {
+      if (!this.$storage.routesInStorage || this.$storage.routesInStorage.length === 0) {
         // eslint-disable-next-line vue/no-side-effects-in-computed-properties
         this.$storage.routesInStorage = routerArrays;
       }
@@ -26,28 +23,19 @@ export default {
 </script>
 
 <script setup lang="ts">
-import {
-  ref,
-  unref,
-  reactive,
-  computed,
-  onMounted,
-  watchEffect,
-  onBeforeMount,
-  getCurrentInstance
-} from "vue";
+import { ref, unref as _unref, reactive, computed, onMounted, watchEffect, onBeforeMount, getCurrentInstance } from "vue";
 import { setType } from "./types";
 import { useI18n } from "vue-i18n";
 import { emitter } from "/@/utils/mitt";
 import { useEventListener } from "@vueuse/core";
 import { storageLocal } from "/@/utils/storage";
 import { useAppStoreHook } from "/@/store/modules/app";
-import fullScreen from "/@/assets/svg/full_screen.svg";
-import exitScreen from "/@/assets/svg/exit_screen.svg";
+// import fullScreen from "/@/assets/svg/full_screen.svg";
+// import exitScreen from "/@/assets/svg/exit_screen.svg";
 import { useSettingStoreHook } from "/@/store/modules/settings";
 
 import navbar from "./components/navbar.vue";
-import tag from "./components/tag/index.vue";
+// import tag from "./components/tag/index.vue";
 import appMain from "./components/appMain.vue";
 import setting from "./components/setting/index.vue";
 import Vertical from "./components/sidebar/vertical.vue";
@@ -55,12 +43,9 @@ import Horizontal from "./components/sidebar/horizontal.vue";
 
 const pureSetting = useSettingStoreHook();
 
-const instance =
-  getCurrentInstance().appContext.app.config.globalProperties.$storage;
+const instance = getCurrentInstance().appContext.app.config.globalProperties.$storage;
 
-const hiddenSideBar = ref(
-  getCurrentInstance().appContext.config.globalProperties.$config?.HiddenSideBar
-);
+const hiddenSideBar = ref(getCurrentInstance().appContext.config.globalProperties.$config?.HiddenSideBar);
 
 const set: setType = reactive({
   sidebar: computed(() => {
@@ -124,11 +109,9 @@ const $_resizeHandler = () => {
   }
 };
 
-function onFullScreen() {
-  unref(hiddenSideBar)
-    ? (hiddenSideBar.value = false)
-    : (hiddenSideBar.value = true);
-}
+// function onFullScreen() {
+//   unref(hiddenSideBar) ? (hiddenSideBar.value = false) : (hiddenSideBar.value = true);
+// }
 
 onMounted(() => {
   const isMobile = $_isMobile();
@@ -145,15 +128,7 @@ onBeforeMount(() => {
 
 <template>
   <div :class="['app-wrapper', set.classes]" v-resize>
-    <div
-      v-show="
-        set.device === 'mobile' &&
-        set.sidebar.opened &&
-        layout.includes('vertical')
-      "
-      class="drawer-bg"
-      @click="handleClickOutside(false)"
-    />
+    <div v-show="set.device === 'mobile' && set.sidebar.opened && layout.includes('vertical')" class="drawer-bg" @click="handleClickOutside(false)" />
     <Vertical v-show="!hiddenSideBar && layout.includes('vertical')" />
     <div :class="['main-container', hiddenSideBar ? 'main-hidden' : '']">
       <div :class="{ 'fixed-header': set.fixedHeader }">
@@ -161,12 +136,12 @@ onBeforeMount(() => {
         <navbar v-show="!hiddenSideBar && layout.includes('vertical')" />
         <!-- tabs标签页 -->
         <Horizontal v-show="!hiddenSideBar && layout.includes('horizontal')" />
-        <tag>
+        <!-- <tag>
           <span @click="onFullScreen">
             <fullScreen v-if="!hiddenSideBar" />
             <exitScreen v-else />
           </span>
-        </tag>
+        </tag> -->
       </div>
       <!-- 主体内容 -->
       <app-main />

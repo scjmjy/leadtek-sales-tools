@@ -12,6 +12,12 @@ export const menusConfig = {
   zh: {
     message: {
       hshome: "首页",
+      hsPersonal: "个人中心",
+      hsRecord: "我的记录",
+      hsServer: "服务器",
+      hsStation: "工作站",
+      hsServerDetail: "服务器详情",
+      hsStationDetail: "工作站详情",
       hssysManagement: "系统管理",
       hsBaseinfo: "基础信息",
       hsDict: "字典管理",
@@ -48,6 +54,12 @@ export const menusConfig = {
   en: {
     message: {
       hshome: "Home",
+      hsPersonal: "Personal Center",
+      hsRecord: "My Records",
+      hsServer: "Server",
+      hsStation: "Station",
+      hsServerDetail: "Server Detail",
+      hsStationDetail: "Station Detail",
       hssysManagement: "System Manage",
       hsBaseinfo: "Base Info",
       hsDict: "Dict Manage",

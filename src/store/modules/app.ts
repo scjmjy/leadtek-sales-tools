@@ -2,6 +2,8 @@ import { storageLocal } from "/@/utils/storage";
 import { deviceDetection } from "/@/utils/deviceDetection";
 import { defineStore } from "pinia";
 import { store } from "/@/store";
+import { GlobalBusinessConfig, UserInfo } from "./types";
+import { getGlobalCfg, getUserInfo } from "/@/api/user";
 
 interface AppState {
   sidebar: {
@@ -10,21 +12,21 @@ interface AppState {
   };
   layout: string;
   device: string;
+  userInfo: UserInfo | undefined;
+  businessCfg: GlobalBusinessConfig | undefined;
 }
 
 export const useAppStore = defineStore({
   id: "pure-app",
   state: (): AppState => ({
     sidebar: {
-      opened: storageLocal.getItem("sidebarStatus")
-        ? !!+storageLocal.getItem("sidebarStatus")
-        : true,
+      opened: storageLocal.getItem("sidebarStatus") ? !!+storageLocal.getItem("sidebarStatus") : true,
       withoutAnimation: false
     },
-    layout:
-      storageLocal.getItem("responsive-layout")?.layout.match(/(.*)-/)[1] ??
-      "vertical",
-    device: deviceDetection() ? "mobile" : "desktop"
+    layout: storageLocal.getItem("responsive-layout")?.layout.match(/(.*)-/)[1] ?? "vertical",
+    device: deviceDetection() ? "mobile" : "desktop",
+    userInfo: undefined,
+    businessCfg: undefined
   }),
   getters: {
     getSidebarStatus() {
@@ -63,6 +65,16 @@ export const useAppStore = defineStore({
     },
     setLayout(layout) {
       this.layout = layout;
+    },
+    async getUserInfo() {
+      const userInfo = await getUserInfo();
+      this.userInfo = userInfo;
+      try {
+        const cfg = await getGlobalCfg();
+        this.businessCfg = cfg;
+      } catch (error) {
+        //
+      }
     }
   }
 });

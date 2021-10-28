@@ -1,22 +1,21 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
-import { emitter } from "/@/utils/mitt";
+// import { emitter } from "/@/utils/mitt";
 import Hamburger from "./sidebar/hamBurger.vue";
 import { useRouter, useRoute } from "vue-router";
-import { storageSession } from "/@/utils/storage";
+import { storageLocal } from "/@/utils/storage";
 import Breadcrumb from "./sidebar/breadCrumb.vue";
 import { useAppStoreHook } from "/@/store/modules/app";
-import { unref, watch, getCurrentInstance } from "vue";
+import { unref, watch, getCurrentInstance as _getCurrentInstance } from "vue";
 import { deviceDetection } from "/@/utils/deviceDetection";
 import screenfull from "../components/screenfull/index.vue";
-import globalization from "/@/assets/svg/globalization.svg";
+// import globalization from "/@/assets/svg/globalization.svg";
 
-const instance =
-  getCurrentInstance().appContext.config.globalProperties.$storage;
+// const instance = getCurrentInstance().appContext.config.globalProperties.$storage;
 const pureApp = useAppStoreHook();
 const router = useRouter();
 const route = useRoute();
-let usename = storageSession.getItem("info")?.username;
+let usename = storageLocal.getItem("info")?.userName;
 const { locale, t } = useI18n();
 
 watch(
@@ -29,38 +28,34 @@ watch(
 
 // 退出登录
 const logout = (): void => {
-  storageSession.removeItem("info");
+  storageLocal.removeItem("info");
   router.push("/login");
 };
 
-function onPanel() {
-  emitter.emit("openPanel");
-}
+// function onPanel() {
+//   emitter.emit("openPanel");
+// }
 
 function toggleSideBar() {
   pureApp.toggleSideBar();
 }
 
-// 简体中文
-function translationCh() {
-  instance.locale = { locale: "zh" };
-  locale.value = "zh";
-}
+// // 简体中文
+// function translationCh() {
+//   instance.locale = { locale: "zh" };
+//   locale.value = "zh";
+// }
 
-// English
-function translationEn() {
-  instance.locale = { locale: "en" };
-  locale.value = "en";
-}
+// // English
+// function translationEn() {
+//   instance.locale = { locale: "en" };
+//   locale.value = "en";
+// }
 </script>
 
 <template>
   <div class="navbar">
-    <Hamburger
-      :is-active="pureApp.sidebar.opened"
-      class="hamburger-container"
-      @toggleClick="toggleSideBar"
-    />
+    <Hamburger :is-active="pureApp.sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
 
     <Breadcrumb class="breadcrumb-container" />
 
@@ -68,7 +63,7 @@ function translationEn() {
       <!-- 全屏 -->
       <screenfull v-show="!deviceDetection()" />
       <!-- 国际化 -->
-      <el-dropdown trigger="click">
+      <!-- <el-dropdown trigger="click">
         <globalization />
         <template #dropdown>
           <el-dropdown-menu class="translation">
@@ -90,28 +85,21 @@ function translationEn() {
             >
           </el-dropdown-menu>
         </template>
-      </el-dropdown>
+      </el-dropdown> -->
+      <router-link to="/record">我的记录</router-link>
       <!-- 退出登陆 -->
-      <el-dropdown trigger="click">
+      <el-dropdown trigger="click" placement="bottom">
         <span class="el-dropdown-link">
-          <img
-            src="https://avatars.githubusercontent.com/u/44761321?s=400&u=30907819abd29bb3779bc247910873e7c7f7c12f&v=4"
-          />
+          <img src="https://avatars.githubusercontent.com/u/44761321?s=400&u=30907819abd29bb3779bc247910873e7c7f7c12f&v=4" />
           <p>{{ usename }}</p>
         </span>
         <template #dropdown>
           <el-dropdown-menu class="logout">
-            <el-dropdown-item icon="el-icon-switch-button" @click="logout">{{
-              $t("message.hsLoginOut")
-            }}</el-dropdown-item>
+            <el-dropdown-item icon="el-icon-switch-button" @click="logout">{{ $t("message.hsLoginOut") }}</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
-      <i
-        class="el-icon-setting"
-        :title="$t('message.hssystemSet')"
-        @click="onPanel"
-      ></i>
+      <!-- <i class="el-icon-setting" :title="$t('message.hssystemSet')" @click="onPanel"></i> -->
     </div>
   </div>
 </template>
@@ -139,7 +127,7 @@ function translationEn() {
 
   .vertical-header-right {
     display: flex;
-    min-width: 280px;
+    // min-width: 280px;
     height: 48px;
     align-items: center;
     color: #000000d9;

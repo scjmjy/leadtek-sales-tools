@@ -6,7 +6,7 @@ const homeRouter = {
   component: Layout,
   redirect: "/welcome",
   meta: {
-    icon: "el-icon-s-home",
+    // icon: "el-icon-s-home",
     showLink: true,
     rank: 0
   },
@@ -18,6 +18,16 @@ const homeRouter = {
       meta: {
         title: "message.hshome",
         showLink: true
+      }
+    },
+    {
+      path: "/user",
+      name: "user",
+      component: () => import("/@/views/user/index.vue"),
+      meta: {
+        title: "message.hsPersonal",
+        showLink: true,
+        invisible: true
       }
     }
   ]

@@ -2,7 +2,7 @@
 import { ref, PropType, getCurrentInstance, watch, nextTick, toRef } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { initRouter } from "/@/router";
-import { storageSession } from "/@/utils/storage";
+import { storageLocal } from "/@/utils/storage";
 
 export interface ContextProps {
   userName: string;
@@ -16,6 +16,9 @@ export interface ContextProps {
 const props = defineProps({
   ruleForm: {
     type: Object as PropType<ContextProps>
+  },
+  loading: {
+    type: Boolean
   }
 });
 
@@ -26,20 +29,20 @@ const emit = defineEmits<{
 
 const instance = getCurrentInstance();
 
+const title = instance.appContext.config.globalProperties.$config?.Title;
+
 const model = toRef(props, "ruleForm");
 let tips = ref<string>("注册");
 let tipsFalse = ref<string>("登录");
 
 const route = useRoute();
-const router = useRouter();
+// const router = useRouter();
 
 watch(
   route,
   async ({ path }): Promise<void> => {
     await nextTick();
-    path.includes("register")
-      ? (tips.value = "登录") && (tipsFalse.value = "注册")
-      : (tips.value = "注册") && (tipsFalse.value = "登录");
+    path.includes("register") ? (tips.value = "登录") && (tipsFalse.value = "注册") : (tips.value = "注册") && (tipsFalse.value = "登录");
   },
   { immediate: true }
 );
@@ -69,53 +72,42 @@ const onBehavior = (evt: Object): void => {
 };
 
 // 刷新验证码
-const refreshVerify = (): void => {
-  emit("refreshVerify");
-};
+// const refreshVerify = (): void => {
+//   emit("refreshVerify");
+// };
 
 // 表单重置
-const resetForm = (): void => {
-  // @ts-expect-error
-  instance.refs.ruleForm.resetFields();
-};
+// const resetForm = (): void => {
+//   // @ts-expect-error
+//   instance.refs.ruleForm.resetFields();
+// };
 
-// 登录、注册页面切换
-const changPage = (): void => {
-  tips.value === "注册" ? router.push("/register") : router.push("/login");
-};
+// // 登录、注册页面切换
+// const changPage = (): void => {
+//   tips.value === "注册" ? router.push("/register") : router.push("/login");
+// };
 
-const noSecret = (): void => {
-  storageSession.setItem("info", {
-    username: "admin",
-    accessToken: "eyJhbGciOiJIUzUxMiJ9.test"
-  });
-  initRouter("admin").then(() => {});
-  router.push("/");
-};
+// const noSecret = (): void => {
+//   storageLocal.setItem("info", {
+//     username: "admin",
+//     accessToken: "eyJhbGciOiJIUzUxMiJ9.test"
+//   });
+//   initRouter("admin").then(() => {});
+//   router.push("/");
+// };
 </script>
 
 <template>
   <div class="info">
+    <div class="info__title">{{ title }}</div>
     <el-form :model="model" :rules="rules" ref="ruleForm" class="rule-form">
       <el-form-item prop="userName">
-        <el-input
-          clearable
-          v-model="model.userName"
-          placeholder="请输入用户名"
-          prefix-icon="el-icon-user"
-        ></el-input>
+        <el-input clearable v-model="model.userName" placeholder="请输入用户名" prefix-icon="el-icon-user"></el-input>
       </el-form-item>
       <el-form-item prop="passWord">
-        <el-input
-          clearable
-          type="password"
-          show-password
-          v-model="model.passWord"
-          placeholder="请输入密码"
-          prefix-icon="el-icon-lock"
-        ></el-input>
+        <el-input clearable type="password" show-password v-model="model.passWord" placeholder="请输入密码" prefix-icon="el-icon-lock"></el-input>
       </el-form-item>
-      <el-form-item prop="verify">
+      <!-- <el-form-item prop="verify">
         <el-input
           maxlength="2"
           onkeyup="this.value=this.value.replace(/[^\d.]/g,'');"
@@ -128,17 +120,13 @@ const noSecret = (): void => {
           v-html="model.svg"
           @click.prevent="refreshVerify"
         ></span>
-      </el-form-item>
+      </el-form-item>-->
       <el-form-item>
-        <el-button type="primary" @click.prevent="onBehavior">{{
-          tipsFalse
-        }}</el-button>
-        <el-button @click="resetForm">重置</el-button>
-        <span class="tips" @click="changPage">{{ tips }}</span>
+        <el-button :loading="props.loading" type="primary" @click.prevent="onBehavior" style="width: 100%">{{ tipsFalse }}</el-button>
+        <!-- <el-button type="text" @click="resetForm" style="float: right">重置</el-button> -->
+        <!-- <span class="tips" @click="changPage">{{ tips }}</span> -->
       </el-form-item>
-      <span title="测试用户 直接登录" class="secret" @click="noSecret"
-        >免密登录</span
-      >
+      <!-- <span title="测试用户 直接登录" class="secret" @click="noSecret">免密登录</span> -->
     </el-form>
   </div>
 </template>
@@ -146,14 +134,17 @@ const noSecret = (): void => {
 <style lang="scss" scoped>
 .info {
   width: 30vw;
-  height: 48vh;
-  background: url("../../assets/login.png") no-repeat center;
+  // height: 48vh;
+  padding: 40px 0px 20px;
+  // background: url("../../assets/login.png") no-repeat center;
+  background: var(--el-color-info-lighter);
   background-size: cover;
   position: absolute;
   border-radius: 20px;
   right: 100px;
   top: 30vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   @media screen and (max-width: 750px) {
@@ -162,7 +153,13 @@ const noSecret = (): void => {
     top: 22vh;
   }
 
+  &__title {
+    color: var(--el-color-primary);
+    font-size: x-large;
+    font-weight: bold;
+  }
   .rule-form {
+    margin-top: 20px;
     width: 80%;
 
     .verify {

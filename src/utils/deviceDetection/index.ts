@@ -18,9 +18,7 @@ export const deviceDetection = () => {
   const bIsAndroid = sUserAgent.match(/android/i) == "android";
   const bIsCE = sUserAgent.match(/windows ce/i) == "windows ce";
   const bIsWM = sUserAgent.match(/windows mobile/i) == "windows mobile";
-  return (
-    bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM
-  );
+  return bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM;
 };
 
 // 获取浏览器型号以及版本

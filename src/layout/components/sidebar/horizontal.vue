@@ -1,12 +1,5 @@
 <script setup lang="ts">
-import {
-  computed,
-  unref,
-  watch,
-  nextTick,
-  onMounted,
-  getCurrentInstance
-} from "vue";
+import { computed, unref, watch, nextTick, onMounted, getCurrentInstance } from "vue";
 import { useI18n } from "vue-i18n";
 import { emitter } from "/@/utils/mitt";
 import { templateRef } from "@vueuse/core";
@@ -14,23 +7,22 @@ import SidebarItem from "./sidebarItem.vue";
 import { algorithm } from "/@/utils/algorithm";
 import screenfull from "../screenfull/index.vue";
 import { useRoute, useRouter } from "vue-router";
-import { storageSession } from "/@/utils/storage";
+import { storageLocal } from "/@/utils/storage";
 import { deviceDetection } from "/@/utils/deviceDetection";
-import globalization from "/@/assets/svg/globalization.svg";
+// import globalization from "/@/assets/svg/globalization.svg";
 import { usePermissionStoreHook } from "/@/store/modules/permission";
+import { getLogout } from "/@/api/user";
 
-const instance =
-  getCurrentInstance().appContext.config.globalProperties.$storage;
+// const instance = getCurrentInstance().appContext.config.globalProperties.$storage;
 
-const title =
-  getCurrentInstance().appContext.config.globalProperties.$config?.Title;
+const title = getCurrentInstance().appContext.config.globalProperties.$config?.Title;
 
 const menuRef = templateRef<ElRef | null>("menu", null);
 const routeStore = usePermissionStoreHook();
 const route = useRoute();
 const router = useRouter();
 const routers = useRouter().options.routes;
-let usename = storageSession.getItem("info")?.username;
+let usename = storageLocal.getItem("info")?.userName;
 const { locale, t } = useI18n();
 
 watch(
@@ -44,13 +36,14 @@ watch(
 
 // 退出登录
 const logout = (): void => {
-  storageSession.removeItem("info");
+  getLogout();
+  storageLocal.removeItem("info");
   router.push("/login");
 };
 
-function onPanel() {
-  emitter.emit("openPanel");
-}
+// function onPanel() {
+//   emitter.emit("openPanel");
+// }
 
 const activeMenu = computed((): string => {
   const { meta, path } = route;
@@ -84,28 +77,31 @@ const menuSelect = (indexPath: string): void => {
   findCurrentRoute(algorithm.increaseIndexes(routers));
 };
 
-function backHome() {
-  router.push("/welcome");
+function gotoPersonalPage() {
+  router.push("/user");
 }
+// function backHome() {
+//   router.push("/welcome");
+// }
 
 function handleResize() {
   // @ts-ignore
   menuRef.value.handleResize();
 }
 
-// 简体中文
-function translationCh() {
-  instance.locale = { locale: "zh" };
-  locale.value = "zh";
-  handleResize();
-}
+// // 简体中文
+// function translationCh() {
+//   instance.locale = { locale: "zh" };
+//   locale.value = "zh";
+//   handleResize();
+// }
 
-// English
-function translationEn() {
-  instance.locale = { locale: "en" };
-  locale.value = "en";
-  handleResize();
-}
+// // English
+// function translationEn() {
+//   instance.locale = { locale: "en" };
+//   locale.value = "en";
+//   handleResize();
+// }
 
 onMounted(() => {
   nextTick(() => {
@@ -116,31 +112,21 @@ onMounted(() => {
 
 <template>
   <div class="horizontal-header">
-    <div class="horizontal-header-left" @click="backHome">
-      <i class="fa fa-optin-monster"></i>
+    <div class="horizontal-header-left">
+      <!-- <i class="fa fa-optin-monster"></i> -->
+      <img src="/@/assets/img/logo-130x60.png" style="width: 80px; margin-right: 5px" />
       <h4>{{ title }}</h4>
     </div>
-    <el-menu
-      ref="menu"
-      :default-active="activeMenu"
-      unique-opened
-      router
-      class="horizontal-header-menu"
-      mode="horizontal"
-      @select="menuSelect"
-    >
-      <sidebar-item
-        v-for="route in routeStore.wholeRoutes"
-        :key="route.path"
-        :item="route"
-        :base-path="route.path"
-      />
+    <el-menu ref="menu" :default-active="activeMenu" unique-opened router class="horizontal-header-menu" mode="horizontal" @select="menuSelect">
+      <template v-for="route in routeStore.wholeRoutes" :key="route.path">
+        <sidebar-item v-if="!route.meta.invisible" :item="route" :base-path="route.path" />
+      </template>
     </el-menu>
     <div class="horizontal-header-right">
       <!-- 全屏 -->
       <screenfull v-show="!deviceDetection()" />
       <!-- 国际化 -->
-      <el-dropdown trigger="click">
+      <!-- <el-dropdown trigger="click">
         <globalization />
         <template #dropdown>
           <el-dropdown-menu class="translation">
@@ -162,28 +148,22 @@ onMounted(() => {
             >
           </el-dropdown-menu>
         </template>
-      </el-dropdown>
+      </el-dropdown> -->
+      <router-link to="/record">我的记录</router-link>
       <!-- 退出登陆 -->
-      <el-dropdown trigger="click">
+      <el-dropdown trigger="click" placement="bottom-end">
         <span class="el-dropdown-link">
-          <img
-            src="https://avatars.githubusercontent.com/u/44761321?s=400&u=30907819abd29bb3779bc247910873e7c7f7c12f&v=4"
-          />
+          <img src="https://avatars.githubusercontent.com/u/44761321?s=400&u=30907819abd29bb3779bc247910873e7c7f7c12f&v=4" />
           <p>{{ usename }}</p>
         </span>
         <template #dropdown>
           <el-dropdown-menu class="logout">
-            <el-dropdown-item icon="el-icon-switch-button" @click="logout">{{
-              $t("message.hsLoginOut")
-            }}</el-dropdown-item>
+            <el-dropdown-item icon="el-icon-user" @click="gotoPersonalPage">个人中心</el-dropdown-item>
+            <el-dropdown-item icon="el-icon-switch-button" @click="logout">{{ $t("message.hsLoginOut") }}</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
-      <i
-        class="el-icon-setting"
-        :title="$t('message.hssystemSet')"
-        @click="onPanel"
-      ></i>
+      <!-- <i class="el-icon-setting" :title="$t('message.hssystemSet')" @click="onPanel"></i> -->
     </div>
   </div>
 </template>

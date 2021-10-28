@@ -1,8 +1,4 @@
-import Axios, {
-  AxiosRequestConfig,
-  CancelTokenStatic,
-  AxiosInstance
-} from "axios";
+import Axios, { AxiosRequestConfig, CancelTokenStatic, AxiosInstance } from "axios";
 
 import NProgress from "../progress";
 
@@ -17,6 +13,7 @@ import {
   EnclosureHttpResoponse,
   EnclosureHttpError
 } from "./types.d";
+import { storageLocal } from "../storage";
 
 class EnclosureHttp {
   constructor() {
@@ -41,11 +38,9 @@ class EnclosureHttp {
   // 记录当前这一次cancelToken的key
   private currentCancelTokenKey = "";
 
-  private beforeRequestCallback: EnclosureHttpRequestConfig["beforeRequestCallback"] =
-    undefined;
+  private beforeRequestCallback: EnclosureHttpRequestConfig["beforeRequestCallback"] = undefined;
 
-  private beforeResponseCallback: EnclosureHttpRequestConfig["beforeResponseCallback"] =
-    undefined;
+  private beforeResponseCallback: EnclosureHttpRequestConfig["beforeResponseCallback"] = undefined;
 
   public get cancelTokenList(): Array<cancelTokenType> {
     return this.sourceTokenList;
@@ -101,9 +96,7 @@ class EnclosureHttp {
   private deleteCancelTokenByCancelKey(cancelKey: string): void {
     this.sourceTokenList =
       this.sourceTokenList.length < 1
-        ? this.sourceTokenList.filter(
-            cancelToken => cancelToken.cancelKey !== cancelKey
-          )
+        ? this.sourceTokenList.filter(cancelToken => cancelToken.cancelKey !== cancelKey)
         : [];
   }
 
@@ -118,11 +111,9 @@ class EnclosureHttp {
         const $config = config;
         NProgress.start(); // 每次切换页面时，调用进度条
         const cancelKey = EnclosureHttp.genUniqueKey($config);
-        $config.cancelToken = new this.CancelToken(
-          (cancelExecutor: (cancel: any) => void) => {
-            this.sourceTokenList.push({ cancelKey, cancelExecutor });
-          }
-        );
+        $config.cancelToken = new this.CancelToken((cancelExecutor: (cancel: any) => void) => {
+          this.sourceTokenList.push({ cancelKey, cancelExecutor });
+        });
         this.cancelRepeatRequest();
         this.currentCancelTokenKey = cancelKey;
         // 优先判断post/get等方法是否传入回掉，否则执行初始化设置等回掉
@@ -184,8 +175,7 @@ class EnclosureHttp {
           ).length;
           if (haskey) {
             this.sourceTokenList = this.sourceTokenList.filter(
-              cancelToken =>
-                cancelToken.cancelKey !== this.currentCancelTokenKey
+              cancelToken => cancelToken.cancelKey !== this.currentCancelTokenKey
             );
             this.currentCancelTokenKey = "";
           }
@@ -216,6 +206,9 @@ class EnclosureHttp {
     if (axiosConfig?.beforeResponseCallback) {
       this.beforeResponseCallback = axiosConfig.beforeResponseCallback;
     }
+    if (!config.headers) config.headers = {};
+    const token = storageLocal.getItem("info")?.token;
+    config.headers.token = token;
     return new Promise((resolve, reject) => {
       EnclosureHttp.axiosInstance
         .request(config)
@@ -223,24 +216,19 @@ class EnclosureHttp {
           resolve(response);
         })
         .catch((error: any) => {
+          if (error.response?.status === 401) {
+            storageLocal.removeItem("info");
+          }
           reject(error);
         });
     });
   }
 
-  public post<T>(
-    url: string,
-    params?: T,
-    config?: EnclosureHttpRequestConfig
-  ): Promise<T> {
+  public post<T>(url: string, params?: T, config?: EnclosureHttpRequestConfig): Promise<T> {
     return this.request<T>("post", url, params, config);
   }
 
-  public get<T>(
-    url: string,
-    params?: T,
-    config?: EnclosureHttpRequestConfig
-  ): Promise<T> {
+  public get<T>(url: string, params?: T, config?: EnclosureHttpRequestConfig): Promise<T> {
     return this.request<T>("get", url, params, config);
   }
 }

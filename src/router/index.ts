@@ -1,42 +1,42 @@
-import {
-  Router,
-  createRouter,
-  RouteComponent,
-  createWebHashHistory,
-  RouteRecordNormalized
-} from "vue-router";
+import { Router, createRouter, RouteComponent, createWebHashHistory, RouteRecordNormalized } from "vue-router";
 import { RouteConfigs } from "/@/layout/types";
-import { split, uniqBy } from "lodash-es";
+import { uniqBy } from "lodash-es";
 import { i18n } from "/@/plugins/i18n";
-import { openLink } from "/@/utils/link";
 import NProgress from "/@/utils/progress";
 import { useTimeoutFn } from "@vueuse/core";
-import { storageSession, storageLocal } from "/@/utils/storage";
+import { storageLocal } from "/@/utils/storage";
 import { usePermissionStoreHook } from "/@/store/modules/permission";
 
 // 静态路由
 import homeRouter from "./modules/home";
+import recordRoute from "./modules/record";
+import serverRoute from "./modules/server";
+import stationRoute from "./modules/station";
 import Layout from "/@/layout/index.vue";
 import errorRouter from "./modules/error";
-import editorRouter from "./modules/editor";
-import nestedRouter from "./modules/nested";
-import externalLink from "./modules/externalLink";
+// import editorRouter from "./modules/editor";
+// import nestedRouter from "./modules/nested";
+// import externalLink from "./modules/externalLink";
+// import flowChartRouter from "./modules/flowchart";
+// import componentsRouter from "./modules/components";
 import remainingRouter from "./modules/remaining";
-import flowChartRouter from "./modules/flowchart";
-import componentsRouter from "./modules/components";
 // 动态路由
 import { getAsyncRoutes } from "/@/api/routes";
+import { useAppStoreHook } from "../store/modules/app";
 
 // https://cn.vitejs.dev/guide/features.html#glob-import
 const modulesRoutes = import.meta.glob("/src/views/*/*/*.vue");
 
 const constantRoutes: Array<RouteComponent> = [
   homeRouter,
-  flowChartRouter,
-  editorRouter,
-  componentsRouter,
-  nestedRouter,
-  externalLink,
+  recordRoute,
+  serverRoute,
+  stationRoute,
+  // flowChartRouter,
+  // editorRouter,
+  // componentsRouter,
+  // nestedRouter,
+  // externalLink,
   errorRouter
 ];
 
@@ -48,9 +48,7 @@ export const ascending = arr => {
 };
 
 // 将所有静态路由导出
-export const constantRoutesArr: Array<RouteComponent> = ascending(
-  constantRoutes
-).concat(...remainingRouter);
+export const constantRoutesArr: Array<RouteComponent> = ascending(constantRoutes).concat(...remainingRouter);
 
 // 过滤meta中showLink为false的路由
 export const filterTree = data => {
@@ -86,10 +84,7 @@ export const delAliveRoutes = (delAliveRouteList: Array<RouteConfigs>) => {
 };
 
 // 处理缓存路由（添加、删除、刷新）
-export const handleAliveRoute = (
-  matched: RouteRecordNormalized[],
-  mode?: string
-) => {
+export const handleAliveRoute = (matched: RouteRecordNormalized[], mode?: string) => {
   switch (mode) {
     case "add":
       matched.forEach(v => {
@@ -141,8 +136,7 @@ export const router: Router = createRouter({
         return savedPosition;
       } else {
         if (from.meta.saveSrollTop) {
-          const top: number =
-            document.documentElement.scrollTop || document.body.scrollTop;
+          const top: number = document.documentElement.scrollTop || document.body.scrollTop;
           resolve({ left: 0, top });
         }
       }
@@ -159,10 +153,7 @@ export const initRouter = name => {
       } else {
         addAsyncRoutes(info).map((v: any) => {
           // 防止重复添加路由
-          if (
-            router.options.routes.findIndex(value => value.path === v.path) !==
-            -1
-          ) {
+          if (router.options.routes.findIndex(value => value.path === v.path) !== -1) {
             return;
           } else {
             // 切记将路由push到routes后还需要使用addRoute，这样路由才能正常跳转
@@ -205,7 +196,7 @@ router.beforeEach((to, _from, next) => {
       handleAliveRoute(newMatched);
     }
   }
-  const name = storageSession.getItem("info");
+  const name = storageLocal.getItem("info");
   NProgress.start();
   const externalLink = to?.redirectedFrom?.fullPath;
   // @ts-ignore
@@ -213,39 +204,46 @@ router.beforeEach((to, _from, next) => {
   // @ts-ignore
   if (!externalLink) to.meta.title ? (document.title = t(to.meta.title)) : "";
   if (name) {
-    if (_from?.name) {
-      // 如果路由包含http 则是超链接 反之是普通路由
-      if (externalLink && externalLink.includes("http")) {
-        openLink(`http${split(externalLink, "http")[1]}`);
-        NProgress.done();
-      } else {
-        next();
-      }
-    } else {
-      // 刷新
-      if (usePermissionStoreHook().wholeRoutes.length === 0)
-        initRouter(name.username).then((router: Router) => {
-          router.push(to.path);
-          // 刷新页面更新标签栏与页面路由匹配
-          const localRoutes = storageLocal.getItem(
-            "responsive-routesInStorage"
-          );
-          const optionsRoutes = router.options?.routes;
-          const newLocalRoutes = [];
-          optionsRoutes.forEach(ors => {
-            localRoutes.forEach(lrs => {
-              if (ors.path === lrs.parentPath) {
-                newLocalRoutes.push(lrs);
-              }
-            });
+    // if (_from?.name) {
+    //   // 如果路由包含http 则是超链接 反之是普通路由
+    //   if (externalLink && externalLink.includes("http")) {
+    //     openLink(`http${split(externalLink, "http")[1]}`);
+    //     NProgress.done();
+    //   } else {
+    //     next();
+    //   }
+    // } else {
+    // 刷新
+    if (usePermissionStoreHook().wholeRoutes.length === 0)
+      initRouter(name.userName).then((router: Router) => {
+        router.push(to.path);
+        // 刷新页面更新标签栏与页面路由匹配
+        const localRoutes = storageLocal.getItem("responsive-routesInStorage");
+        const optionsRoutes = router.options?.routes;
+        const newLocalRoutes = [];
+        optionsRoutes.forEach(ors => {
+          localRoutes.forEach(lrs => {
+            if (ors.path === lrs.parentPath) {
+              newLocalRoutes.push(lrs);
+            }
           });
-          storageLocal.setItem(
-            "responsive-routesInStorage",
-            uniqBy(newLocalRoutes, "path")
-          );
         });
+        storageLocal.setItem("responsive-routesInStorage", uniqBy(newLocalRoutes, "path"));
+      });
+    const appStore = useAppStoreHook();
+    if (appStore.userInfo) {
       next();
+    } else {
+      appStore
+        .getUserInfo()
+        .then(() => {
+          next();
+        })
+        .catch(() => {
+          next({ path: "/login" });
+        });
     }
+    // }
   } else {
     if (to.path !== "/login") {
       if (whiteList.indexOf(to.path) !== -1) {
