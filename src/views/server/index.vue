@@ -1,16 +1,22 @@
 <script setup lang="ts">
-import { computed, shallowRef, ref } from "vue";
+import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { Server, requestServerList, ServerType } from "/@/api/server";
+import LoadMore from "/@/components/LoadMore.vue";
+import PageScroll from "/@/utils/page-scroll";
+
 const router = useRouter();
 const route = useRoute();
 const serverType = ref(route.query.isStation ? ServerType.Station : ServerType.Server);
 const serverTypeText = computed(() => (serverType.value === ServerType.Server ? "服务器列表" : "工作站列表"));
 const title = computed(() => (serverType.value === ServerType.Server ? "服务器" : "工作站"));
-const serverList = shallowRef<Server[]>([]);
-requestServerList(serverType.value).then(res => {
-  serverList.value = res || [];
-});
+const serverList = ref<Server[]>([]);
+
+function requestServerListWrapper(page: number) {
+  return requestServerList(serverType.value, page);
+}
+
+const pageScroll = new PageScroll<Server>(requestServerListWrapper, serverList, undefined, 3);
 
 function configure(item: Server) {
   router.push("/server/detail?id=" + item.id);
@@ -37,7 +43,7 @@ function configure(item: Server) {
 
     <div class="server__list">
       <div class="server__list-title">{{ serverTypeText }}</div>
-      <el-row v-if="serverList.length" class="server__list-list" :gutter="20">
+      <el-row class="server__list-list" :gutter="20" v-infinite-scroll="pageScroll.requestPageIfAllowed.bind(pageScroll)" :infinite-scroll-disabled="pageScroll.loadState.value === 'nomore'">
         <el-col :xs="24" :md="12" :lg="8" :xl="6" v-for="server of serverList" :key="server.id" style="margin: 5px 0">
           <el-card>
             <template #header>
@@ -56,8 +62,8 @@ function configure(item: Server) {
             </div>
           </el-card>
         </el-col>
+        <load-more :state="pageScroll.loadState.value"></load-more>
       </el-row>
-      <el-empty v-else></el-empty>
     </div>
   </div>
 </template>

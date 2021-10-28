@@ -1,58 +1,60 @@
 <template>
-  <div v-if="serverDetail" class="server-detail">
-    <el-card>
-      <el-row :gutter="30">
-        <el-col :xs="24" :sm="20">
-          <div class="server-detail__server-info">
-            <!-- <div class="server-spec">{{ serverDetail.spec }}</div> -->
-            <div class="server-name">{{ serverDetail.name }}</div>
-            <div class="server-description">{{ serverDetail.desc }}</div>
+  <div class="server-detail">
+    <template v-if="serverDetail">
+      <el-card>
+        <el-row :gutter="30">
+          <el-col :xs="24" :sm="20">
+            <div class="server-detail__server-info">
+              <!-- <div class="server-spec">{{ serverDetail.spec }}</div> -->
+              <div class="server-name">{{ serverDetail.name }}</div>
+              <div class="server-description">{{ serverDetail.desc }}</div>
+            </div>
+          </el-col>
+          <el-col :xs="24" :sm="4" style="padding: 20px 0px">
+            <vue-fixed-ratio :width="1" :height="1">
+              <img :src="serverDetail.pic" style="width: 100%; height: 100%; object-fit: contain" />
+            </vue-fixed-ratio>
+          </el-col>
+        </el-row>
+      </el-card>
+      <el-row :gutter="20" style="margin-top: 20px">
+        <el-col :xs="24" :sm="16" style="margin-top: 20px">
+          <configure-group :modules="serverModules"></configure-group>
+        </el-col>
+        <el-col :xs="24" :sm="8" style="margin-top: 20px">
+          <el-card class="server-detail__manifest">
+            <div class="server-detail__manifest-title">当前配置清单</div>
+            <ul v-if="selectedComponents.length" class="server-detail__manifest-list">
+              <li v-for="(com, index) in selectedComponents" :key="index" class="manifest-item">
+                <span class="manifest-item__count">{{ com.count }}</span>
+                <span class="manifest-item__x">×</span>
+                <span class="manifest-item__name">
+                  {{ com.name }}
+                </span>
+              </li>
+            </ul>
+            <el-empty v-else></el-empty>
+          </el-card>
+          <el-form :inline="true" :model="formData" class="server-detail__form">
+            <el-form-item label="折扣">
+              <el-select v-model="formData.discount" placeholder="请选择折扣">
+                <el-option v-for="(opt, index) of discountOpts" :key="index" :label="opt.label" :value="opt.value"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-form>
+          <div class="server-detail__price">
+            <div>当前配置清单总价：</div>
+            <div class="server-detail__price-value">{{ discountPrice }} RMB</div>
+          </div>
+          <div class="server-detail__action">
+            <el-button type="primary" @click="saveConfigure">保存当前配置</el-button>
+            <el-button type="success" @click="submitConfigure">提交配置审核</el-button>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="4" style="padding: 20px 0px">
-          <vue-fixed-ratio :width="1" :height="1">
-            <img :src="serverDetail.pic" style="width: 100%; height: 100%; object-fit: contain" />
-          </vue-fixed-ratio>
-        </el-col>
       </el-row>
-    </el-card>
-    <el-row :gutter="20" style="margin-top: 20px">
-      <el-col :xs="24" :sm="16" style="margin-top: 20px">
-        <configure-group :modules="serverModules"></configure-group>
-      </el-col>
-      <el-col :xs="24" :sm="8" style="margin-top: 20px">
-        <el-card class="server-detail__manifest">
-          <div class="server-detail__manifest-title">当前配置清单</div>
-          <ul v-if="selectedComponents.length" class="server-detail__manifest-list">
-            <li v-for="(com, index) in selectedComponents" :key="index" class="manifest-item">
-              <span class="manifest-item__count">{{ com.count }}</span>
-              <span class="manifest-item__x">×</span>
-              <span class="manifest-item__name">
-                {{ com.name }}
-              </span>
-            </li>
-          </ul>
-          <el-empty v-else></el-empty>
-        </el-card>
-        <el-form :inline="true" :model="formData" class="server-detail__form">
-          <el-form-item label="折扣">
-            <el-select v-model="formData.discount" placeholder="请选择折扣">
-              <el-option v-for="(opt, index) of discountOpts" :key="index" :label="opt.label" :value="opt.value"></el-option>
-            </el-select>
-          </el-form-item>
-        </el-form>
-        <div class="server-detail__price">
-          <div>当前配置清单总价：</div>
-          <div class="server-detail__price-value">{{ discountPrice }} RMB</div>
-        </div>
-        <div class="server-detail__action">
-          <el-button type="primary" @click="saveConfigure">保存当前配置</el-button>
-          <el-button type="success" @click="submitConfigure">提交配置审核</el-button>
-        </div>
-      </el-col>
-    </el-row>
 
-    <order-dlg v-model="showOrderDlg" :order="order"></order-dlg>
+      <order-dlg v-model="showOrderDlg" :order="order"></order-dlg>
+    </template>
   </div>
 </template>
 

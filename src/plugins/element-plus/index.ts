@@ -45,7 +45,8 @@ import {
   ElCheckbox,
   ElCheckboxGroup,
   ElSelect,
-  ElOption
+  ElOption,
+  ElInfiniteScroll,
 } from "element-plus";
 
 const components = [
@@ -96,7 +97,7 @@ const components = [
   ElOption
 ];
 
-const plugins = [ElLoading];
+const plugins = [ElLoading, ElInfiniteScroll];
 
 export function useElementPlus(app: App) {
   components.forEach((component: Component) => {
