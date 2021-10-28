@@ -45,6 +45,13 @@ const transition = computed(() => {
 
   &__content {
     padding: 0px 20px;
+
+    :deep(.el-scrollbar__view) {
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
   }
 }
 </style>

@@ -83,7 +83,7 @@ if (tempId && !isNaN(tempId)) {
     const tempDetail = res;
     const fid = res.fid;
     requestServerDetail(fid).then(res => {
-      serverDetail.value = Object.assign(res, { fid });
+      serverDetail.value = Object.assign(res, { id: fid });
 
       for (const [key, tempComponents] of Object.entries(tempDetail.mapCgComponent)) {
         const moduleId = +key;
@@ -112,7 +112,7 @@ if (tempId && !isNaN(tempId)) {
     const recordDetail = res;
     const fid = res.fid;
     requestServerDetail(fid).then(res => {
-      serverDetail.value = Object.assign(res, { fid });
+      serverDetail.value = Object.assign(res, { id: fid });
 
       for (const [key, tempComponents] of Object.entries(recordDetail.mapCgComponents)) {
         const moduleId = +key;
@@ -136,24 +136,6 @@ if (tempId && !isNaN(tempId)) {
       }
     });
   });
-  // const order: OrderFunc = async function (customer, done) {
-  //   if (!record2copy.value) {
-  //     done(false);
-  //     return;
-  //   }
-  //   try {
-  //     const recordDetail = await ;
-  //     const recordData = Object.assign(recordDetail, customer);
-  //     await recordOrder(recordData);
-  //     ElMessage.success("记录成功");
-  //     fetchRecordList();
-  //     done(true);
-  //     showOrderDlg.value = false;
-  //   } catch (error) {
-  //     ElMessage.error("操作错误，请联系管理员！");
-  //     done(false);
-  //   }
-  // };
 } else if (id && !isNaN(id)) {
   requestServerDetail(id).then(res => {
     serverDetail.value = Object.assign(res, { id });

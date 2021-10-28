@@ -6,9 +6,9 @@ const version = ref(import.meta.env.PACKAGE_VERSION);
 <template>
   <footer class="fixed-footer footer-gray">
     <div class="copyright">
-      <strong class="copyright__left">Copyright © 2014-2021 <span class="copyright__left-company">丽台科技</span> .</strong> <span class="copyright__right"> All rights reverved.</span>
+      <strong class="copyright__left">Copyright © 2014-2021 <span class="copyright__left-company">丽台科技</span>.</strong> <span class="copyright__right"> All rights reverved.</span>
     </div>
-    <div>
+    <div style="margin-top: 5px">
       <strong>Version: </strong><span>{{ version }}</span>
     </div>
     <!-- <div class="footer-gray">
@@ -143,13 +143,13 @@ const version = ref(import.meta.env.PACKAGE_VERSION);
 
 <style lang="scss" scoped>
 .fixed-footer {
-  margin-top: 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #efefef9a;
-  padding: 20px;
+  // margin-top: 20px;
+  margin: 20px -20px 5px;
+  text-align: center;
+  background-color: #efefefc7;
+  padding: 5px;
   color: var(--el-color-info);
+  z-index: 111111;
 
   & .copyright {
     &__left {
