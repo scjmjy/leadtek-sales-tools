@@ -45,3 +45,14 @@
 .is-dark {
   z-index: 99999 !important;
 }
+.el-form-item__label {
+  position: relative;
+  &:before {
+    position: absolute;
+    right: 0px;
+  }
+}
+
+.el-card {
+  --el-card-background-color: #ffffffb0;
+}

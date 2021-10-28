@@ -534,6 +534,9 @@ body[data-layout="horizontal"] {
     // padding-top: 98px;
     padding-top: 78px;
   }
+  .fixed-footer + .app-main {
+    padding-bottom: 200px;
+  }
 }
 
 // vertical模式下暗色主题

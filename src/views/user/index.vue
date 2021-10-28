@@ -12,26 +12,26 @@
             <!-- <div class="text-center">
               <userAvatar :user="user" />
             </div> -->
-            <ul class="list-group list-group-striped">
+            <ul class="list-group">
               <li class="list-group-item">
-                <svg-icon icon-class="user" />名称
+                <i class="fa fa-user">名称</i>
                 <div class="pull-right">{{ user.name }}</div>
               </li>
               <li class="list-group-item">
-                <svg-icon icon-class="phone" />手机号码
+                <i class="fa fa-phone">手机号码</i>
                 <div class="pull-right">{{ user.mobile }}</div>
               </li>
               <li class="list-group-item">
-                <svg-icon icon-class="email" />邮箱
+                <i class="fa fa-home">公司</i>
+                <div class="pull-right">{{ user.company }}</div>
+              </li>
+              <li class="list-group-item">
+                <i class="fa fa-at"></i>邮箱
                 <div class="pull-right">{{ user.email }}</div>
               </li>
               <li class="list-group-item">
-                <svg-icon icon-class="email" />传真
+                <i class="fa fa-podcast">传真</i>
                 <div class="pull-right">{{ user.fax }}</div>
-              </li>
-              <li class="list-group-item">
-                <svg-icon icon-class="email" />公司
-                <div class="pull-right">{{ user.company }}</div>
               </li>
             </ul>
           </div>
@@ -68,3 +68,22 @@ const store = useAppStoreHook();
 const user = reactive(Object.assign({}, store.userInfo));
 const activeTab = ref<"userinfo" | "resetPwd">("userinfo");
 </script>
+
+<style lang="scss" scoped>
+.list-group {
+  padding-left: 0px;
+  list-style: none;
+}
+
+.list-group-item {
+  margin-bottom: -1px;
+  padding: 11px 0px;
+  font-size: 13px;
+
+  i {
+    &::before {
+      padding-right: 3px;
+    }
+  }
+}
+</style>

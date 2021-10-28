@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, getCurrentInstance } from "vue";
 import { usePermissionStoreHook } from "/@/store/modules/permission";
+import AppFooter from "./footer.vue";
 
 const keepAlive: Boolean = ref(getCurrentInstance().appContext.config.globalProperties.$config?.KeepAlive);
 
@@ -30,6 +31,7 @@ const transition = computed(() => {
           </transition>
         </template>
       </router-view>
+      <app-footer />
     </el-scrollbar>
   </section>
 </template>

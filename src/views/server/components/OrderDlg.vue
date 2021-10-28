@@ -1,6 +1,6 @@
 <template>
   <el-dialog custom-class="order-dlg" title="填写客户信息" width="500px" :close-on-click-modal="false" :close-on-press-escape="false" :model-value="modelValue" destroy-on-close v-bind="$attrs">
-    <el-form ref="elForm" :model="formData" :rules="formRules" label-width="140px" label-position="left" @validate="onValidate">
+    <el-form ref="elForm" :model="formData" :rules="formRules" label-width="100px" label-position="right" @validate="onValidate">
       <el-form-item label="客户姓名" prop="name">
         <el-input v-model="formData.name"></el-input>
       </el-form-item>

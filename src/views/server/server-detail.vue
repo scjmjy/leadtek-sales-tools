@@ -63,7 +63,7 @@ import { useRoute, useRouter } from "vue-router";
 import ConfigureGroup from "./components/ConfigureGroup.vue";
 import OrderDlg, { OrderFunc } from "./components/OrderDlg.vue";
 import { SelectComponentFunc } from "./types";
-import { requestServerDetail, ServerModule, ServerDetail, ComponentDetail, recordOrder, OrderRecordCreate, OrderRecordStatus, requestTemplateDetail, ServerTemplateDetail, ComponentItem } from "/@/api/server";
+import { requestServerDetail, ServerModule, ServerDetail, ComponentDetail, recordOrder, OrderRecordCreate, OrderRecordStatus, requestTemplateDetail, ComponentItem, requestRecordDetail } from "/@/api/server";
 import { useAppStoreHook } from "/@/store/modules/app";
 
 const route = useRoute();
@@ -71,20 +71,21 @@ const router = useRouter();
 const store = useAppStoreHook();
 const id = +route.query.id;
 const tempId = +route.query.tempId;
+const recordId = +route.query.recordId;
 const serverDetail = ref<ServerDetail>();
-const tempDetail = ref<ServerTemplateDetail>();
+// const tempDetail = ref<ServerTemplateDetail>();
 
 const showOrderDlg = ref(false);
 const recordStatus = ref<OrderRecordStatus>();
 
 if (tempId && !isNaN(tempId)) {
   requestTemplateDetail(tempId).then(res => {
-    tempDetail.value = res;
+    const tempDetail = res;
     const fid = res.fid;
     requestServerDetail(fid).then(res => {
       serverDetail.value = Object.assign(res, { fid });
 
-      for (const [key, tempComponents] of Object.entries(tempDetail.value.mapCgComponent)) {
+      for (const [key, tempComponents] of Object.entries(tempDetail.mapCgComponent)) {
         const moduleId = +key;
         const module = serverDetail.value.mapCgComponents[moduleId];
         if (module) {
@@ -106,6 +107,53 @@ if (tempId && !isNaN(tempId)) {
       }
     });
   });
+} else if (recordId && !isNaN(recordId)) {
+  requestRecordDetail(recordId).then(res => {
+    const recordDetail = res;
+    const fid = res.fid;
+    requestServerDetail(fid).then(res => {
+      serverDetail.value = Object.assign(res, { fid });
+
+      for (const [key, tempComponents] of Object.entries(recordDetail.mapCgComponents)) {
+        const moduleId = +key;
+        const module = serverDetail.value.mapCgComponents[moduleId];
+        if (module) {
+          module.selected = module.multiple ? [] : undefined;
+          for (const com of tempComponents) {
+            const foundCom = module.components.find(c => c.id === com.cid);
+            if (foundCom) {
+              foundCom.count = com.count;
+              if (module.multiple) {
+                // @ts-ignore
+                module.selected.push(com.cid);
+              } else {
+                // @ts-ignore
+                module.selected = com.cid;
+              }
+            }
+          }
+        }
+      }
+    });
+  });
+  // const order: OrderFunc = async function (customer, done) {
+  //   if (!record2copy.value) {
+  //     done(false);
+  //     return;
+  //   }
+  //   try {
+  //     const recordDetail = await ;
+  //     const recordData = Object.assign(recordDetail, customer);
+  //     await recordOrder(recordData);
+  //     ElMessage.success("记录成功");
+  //     fetchRecordList();
+  //     done(true);
+  //     showOrderDlg.value = false;
+  //   } catch (error) {
+  //     ElMessage.error("操作错误，请联系管理员！");
+  //     done(false);
+  //   }
+  // };
 } else if (id && !isNaN(id)) {
   requestServerDetail(id).then(res => {
     serverDetail.value = Object.assign(res, { id });
@@ -122,14 +170,14 @@ const serverModules = computed<ServerModule[]>(() => {
     for (const com of module.components) {
       !com.count && (com.count = 1);
     }
-    module.components.sort((a, b) => a.priority - b.priority);
+    module.components.sort((a, b) => b.priority - a.priority);
     modules.push(
       Object.assign(module, {
         id: +moduleId
       })
     );
   }
-  return modules.sort((a, b) => a.priority - b.priority);
+  return modules.sort((a, b) => b.priority - a.priority);
 });
 const selectedModules = ref<ServerModule[]>([]);
 const selectedComponents = computed(() => {
@@ -211,7 +259,7 @@ provide<SelectComponentFunc>("selectComponent", function ({ moduleId, components
       selectedModules.value.push(Object.assign({}, module, { components }));
     }
   }
-  selectedModules.value.sort((a, b) => a.priority - b.priority);
+  selectedModules.value.sort((a, b) => b.priority - a.priority);
 });
 
 function saveConfigure() {

@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ElMessage, ElMessageBox } from "element-plus";
 import { computed, ref, shallowRef } from "vue";
-import OrderDlg, { OrderFunc } from "../server/components/OrderDlg.vue";
-import { deleteRecord, OrderRecordItem, OrderRecordStatus, OrderRecordStatusTags, recordOrder, requestRecordDetail, requestRecordList, requestRecordOrderPdf } from "/@/api/server";
+import { useRouter } from "vue-router";
+// import OrderDlg, { OrderFunc } from "../server/components/OrderDlg.vue";
+import { deleteRecord, OrderRecordItem, OrderRecordStatus, OrderRecordStatusTags, requestRecordList, requestRecordOrderPdf } from "/@/api/server";
 
+const router = useRouter();
 const loading = ref(false);
 const recordList = shallowRef<OrderRecordItem[]>([]);
 
@@ -63,31 +65,32 @@ function deleteRecordItem(record: OrderRecordItem) {
     .catch(() => {});
 }
 
-const showOrderDlg = ref(false);
-const record2copy = ref<OrderRecordItem>();
+// const showOrderDlg = ref(false);
+// const record2copy = ref<OrderRecordItem>();
 function oneMoreOrder(record: OrderRecordItem) {
-  record2copy.value = record;
-  showOrderDlg.value = true;
+  // record2copy.value = record;
+  // showOrderDlg.value = true;
+  router.push("/server/detail?recordId=" + record.id);
 }
 
-const order: OrderFunc = async function (customer, done) {
-  if (!record2copy.value) {
-    done(false);
-    return;
-  }
-  try {
-    const recordDetail = await requestRecordDetail(record2copy.value.id);
-    const recordData = Object.assign(recordDetail, customer);
-    await recordOrder(recordData);
-    ElMessage.success("记录成功");
-    fetchRecordList();
-    done(true);
-    showOrderDlg.value = false;
-  } catch (error) {
-    ElMessage.error("操作错误，请联系管理员！");
-    done(false);
-  }
-};
+// const order: OrderFunc = async function (customer, done) {
+//   if (!record2copy.value) {
+//     done(false);
+//     return;
+//   }
+//   try {
+//     const recordDetail = await requestRecordDetail(record2copy.value.id);
+//     const recordData = Object.assign(recordDetail, customer);
+//     await recordOrder(recordData);
+//     ElMessage.success("记录成功");
+//     fetchRecordList();
+//     done(true);
+//     showOrderDlg.value = false;
+//   } catch (error) {
+//     ElMessage.error("操作错误，请联系管理员！");
+//     done(false);
+//   }
+// };
 </script>
 
 <template>
@@ -101,20 +104,20 @@ const order: OrderFunc = async function (customer, done) {
     </el-tabs>
     <el-card class="record__list" v-for="record of activeRecordList" :key="record.id">
       <el-row :gutter="20">
-        <el-col :span="4">
+        <el-col :xs="12" :span="6">
           <el-image :src="record.fpic"></el-image>
         </el-col>
-        <el-col :span="12" :xs="8" :sm="10">
+        <el-col :xs="12" :span="9">
           <div class="record__list__server">
             <div class="server-host">{{ record.fname }}</div>
             <div class="server-components">{{ record.components.join("\n") }}</div>
           </div>
         </el-col>
-        <el-col :span="4">
+        <el-col :xs="12" :span="5">
           <div class="record__list__sales">
             <div>
               <div>原价：{{ record.price }} 元</div>
-              <div>折扣：{{ record.discount }} 元</div>
+              <div>折扣：{{ record.discount }}</div>
               <div>总金额：{{ record.offer }} 元</div>
             </div>
             <div style="margin-top: 20px">
@@ -128,7 +131,7 @@ const order: OrderFunc = async function (customer, done) {
             </div>
           </div>
         </el-col>
-        <el-col :span="4" :xs="8" :sm="6">
+        <el-col :xs="12" :span="4">
           <div class="record__list__action">
             <el-button type="primary" :loading="loadingPdf" @click="openOrderList(record)">查看报价单</el-button>
             <el-button type="danger" :loading="loadingDelete" @click="deleteRecordItem(record)">删除记录</el-button>
@@ -138,7 +141,7 @@ const order: OrderFunc = async function (customer, done) {
       </el-row>
     </el-card>
     <el-empty v-if="activeRecordList.length === 0"></el-empty>
-    <order-dlg v-model="showOrderDlg" :order="order"></order-dlg>
+    <!-- <order-dlg v-model="showOrderDlg" :order="order"></order-dlg> -->
   </div>
 </template>
 

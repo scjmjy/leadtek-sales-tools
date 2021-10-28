@@ -45,7 +45,7 @@ function chooseTempalte(item: ServerTemplate) {
     <div class="my-record">
       <div class="my-record__title">我的记录</div>
       <el-table class="my-record__list" :data="recordList" :row-style="{ cursor: 'pointer' }" @row-click="onRecordRowClick">
-        <el-table-column prop="pic" align="center">
+        <el-table-column prop="pic" align="center" width="200px">
           <template #default="scope">
             <el-image :src="scope.row.fpic"></el-image>
           </template>
@@ -54,7 +54,7 @@ function chooseTempalte(item: ServerTemplate) {
         <el-table-column label="主机信息" prop="fname" align="center"></el-table-column>
         <el-table-column label="组件信息" prop="components" align="center">
           <template #default="scope">
-            <div style="white-space: pre">
+            <div style="white-space: pre; text-align: left">
               {{ scope.row.components.join("\n") }}
             </div>
           </template>

@@ -4,6 +4,7 @@ import { defineStore } from "pinia";
 import { store } from "/@/store";
 import { GlobalBusinessConfig, UserInfo } from "./types";
 import { getGlobalCfg, getUserInfo } from "/@/api/user";
+import { addWatermark } from "/@/utils/watermark";
 
 interface AppState {
   sidebar: {
@@ -69,6 +70,11 @@ export const useAppStore = defineStore({
     async getUserInfo() {
       const userInfo = await getUserInfo();
       this.userInfo = userInfo;
+
+      const name = storageLocal.getItem("info").accountName || userInfo.name;
+
+      addWatermark(name);
+
       try {
         const cfg = await getGlobalCfg();
         this.businessCfg = cfg;

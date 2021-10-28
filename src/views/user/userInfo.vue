@@ -6,6 +6,9 @@
     <el-form-item label="手机号码" prop="mobile">
       <el-input v-model="userInfo.mobile" maxlength="11" />
     </el-form-item>
+    <el-form-item label="公司" prop="company">
+      <el-input v-model="userInfo.company" maxlength="50" />
+    </el-form-item>
     <el-form-item label="邮箱" prop="email">
       <el-input v-model="userInfo.email" maxlength="50" />
     </el-form-item>
@@ -42,6 +45,7 @@ const props = defineProps<{
 const userInfo = reactive(Object.assign({}, props.user));
 const rules = {
   name: [{ required: true, message: "用户昵称不能为空", trigger: "blur" }],
+  company: [{ required: true, message: "公司名称不能为空", trigger: "blur" }],
   email: [
     { required: true, message: "邮箱地址不能为空", trigger: "blur" },
     {
