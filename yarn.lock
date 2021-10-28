@@ -4674,6 +4674,11 @@ vite-plugin-mock@^2.9.6:
     fast-glob "^3.2.7"
     path-to-regexp "^6.2.0"
 
+vite-plugin-package-version@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.npmmirror.com/vite-plugin-package-version/download/vite-plugin-package-version-1.0.2.tgz#72b9919f6022eac093fd04533dc0e26dffe22771"
+  integrity sha1-crmRn2Ai6sCT/QRTPcDibf/iJ3E=
+
 vite-plugin-style-import@^1.2.1:
   version "1.2.1"
   resolved "https://registry.npmjs.org/vite-plugin-style-import/-/vite-plugin-style-import-1.2.1.tgz#730c7b0e1f61ed685974fe09d2d5094858491be6"

@@ -8,6 +8,7 @@ import { viteMockServe } from "vite-plugin-mock";
 import svgLoader from "vite-svg-loader";
 import styleImport from "vite-plugin-style-import";
 import ElementPlus from "unplugin-element-plus/vite";
+import loadVersion from "vite-plugin-package-version";
 
 const pathResolve = (dir: string): string => {
   return resolve(__dirname, ".", dir);
@@ -75,7 +76,8 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
           setupProdMockServer();
         `,
         logger: true
-      })
+      }),
+      loadVersion()
     ],
     optimizeDeps: {
       include: [

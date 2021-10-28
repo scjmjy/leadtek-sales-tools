@@ -1,8 +1,17 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { ref } from "vue";
+const version = ref(import.meta.env.PACKAGE_VERSION);
+</script>
 
 <template>
-  <footer class="fixed-footer">
-    <div class="footer-gray">
+  <footer class="fixed-footer footer-gray">
+    <div class="copyright">
+      <strong class="copyright__left">Copyright © 2014-2021 <span class="copyright__left-company">丽台科技</span> .</strong> <span class="copyright__right"> All rights reverved.</span>
+    </div>
+    <div>
+      <strong>Version: </strong><span>{{ version }}</span>
+    </div>
+    <!-- <div class="footer-gray">
       <div class="footer-custom">
         <div class="footer-lists">
           <div class="footer-list-wrap">
@@ -16,7 +25,6 @@
               <li><a href="https://www.art.co.uk" rel="nofollow">United Kingdom</a></li>
             </ul>
           </div>
-          <!--/.footer-list-wrap-->
           <div class="footer-list-wrap">
             <h6 class="ftr-hdr">Customer Service</h6>
             <ul class="ftr-links-sub">
@@ -43,7 +51,6 @@
               <li><a href="http://blog.art.com" rel="nofollow">ART.COM BLOG</a></li>
             </ul>
           </div>
-          <!--/.footer-list-wrap-->
           <div class="footer-list-wrap">
             <h6 class="ftr-hdr">My Account</h6>
             <ul class="ftr-links-sub">
@@ -57,17 +64,13 @@
               </art:content>
             </ul>
           </div>
-          <!--/.footer-list-wrap-->
         </div>
-        <!--/.footer-lists-->
         <div class="footer-email">
           <h6 class="ftr-hdr">Sign up for exclusive offers and inspiration</h6>
           <div id="ftr-email" class="ftr-email-form">
             <form id="ftrEmailForm" method="post" action="http://em.art.com/pub/rf">
               <div class="error">Please enter a valid email address</div>
               <input type="text" name="email_address_" id="ftrEmailInput" class="input" placeholder="Enter email address" />
-              <!--
-                -->
               <input type="submit" class="button" value="SUBMIT" />
               <input type="hidden" name="country_iso2" value="" />
               <input type="hidden" name="language_iso2" value="en" />
@@ -78,10 +81,8 @@
               <input type="hidden" name="_ri_" value="X0Gzc2X%3DWQpglLjHJlYQGnp51yrMf2qXdC9tjU8pzgMtwfYzaVwjpnpgHlpgneHmgJoXX0Gzc2X%3DWQpglLjHJlYQGnyLSq2fzdkuzdzglHMsUhgeNzaSgkk" />
             </form>
           </div>
-          <!--/.ftr-email-form-->
           <div class="ftr-email-privacy-policy"></div>
         </div>
-        <!--/.footer-email-->
         <div class="footer-social">
           <h6 class="ftr-hdr">Follow Us</h6>
           <ul>
@@ -112,7 +113,6 @@
             </li>
           </ul>
         </div>
-        <!--/.footer-social-->
         <div class="footer-legal">
           <p>
             &copy; Art.com Inc. All Rights Reserved. | <a href="/help/privacy-policy.html" rel="nofollow">Privacy Policy</a> | <a href="/help/terms-of-use.html" rel="nofollow">Terms of Use</a> |
@@ -121,7 +121,6 @@
           <p>Art.com, You+Art, and Photos [to] Art are trademarks or registered trademarks of Art.com Inc.</p>
           <p>Various aspects of this website are covered by issued US patent No. 7,973,796 and other pending patent applications.</p>
         </div>
-        <!--/.footer-legal-->
         <div class="footer-payment">
           <ul>
             <li class="ftr-stella">
@@ -137,315 +136,328 @@
             </li>
           </ul>
         </div>
-        <!--/.footer-payment-->
       </div>
-      <!--/.footer-custom-->
-    </div>
-    <!--/.footer-gray-->
+    </div> -->
   </footer>
 </template>
 
 <style lang="scss" scoped>
 .fixed-footer {
   margin-top: 20px;
-  .hidden {
-    display: none;
-  }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #efefef9a;
+  padding: 20px;
+  color: var(--el-color-info);
 
-  .footer-gray {
-    background-color: #efefef;
-    width: 100%;
-  }
+  & .copyright {
+    &__left {
+      font-weight: bold;
 
-  .footer-custom {
-    color: #888;
-    font: normal normal 12px/1.4 "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-    max-width: 1008px;
-    box-sizing: border-box;
-    margin: 0 auto;
-    padding: 24px;
-  }
-
-  .footer-custom:after {
-    display: table;
-    clear: both;
-    content: "";
-  }
-
-  .footer-lists:after {
-    display: table;
-    clear: both;
-    content: "";
-  }
-
-  .ftr-hdr {
-    color: #000;
-    font: 22px/1.4 "BebasNeueRegular", BebasNeue, "Bebas Neue", Arial, sans-serif;
-    margin: 1em 0 0;
-  }
-
-  @media only screen and (min-width: 768px) {
-    .ftr-hdr {
-      font-size: 18px;
+      &-company {
+        color: var(--el-color-primary);
+      }
     }
   }
+  // .hidden {
+  //   display: none;
+  // }
 
-  .footer-list-wrap {
-    width: 50%;
-    float: left;
-    box-sizing: border-box;
-  }
+  // .footer-gray {
+  //   background-color: #efefefc7;
+  //   width: 100%;
+  // }
 
-  @media only screen and (min-width: 568px) {
-    .footer-list-wrap {
-      width: 33.3333%;
-    }
-  }
+  // .footer-custom {
+  //   color: #888;
+  //   font: normal normal 12px/1.4 "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  //   max-width: 1008px;
+  //   box-sizing: border-box;
+  //   margin: 0 auto;
+  //   padding: 24px;
+  // }
 
-  @media only screen and (min-width: 768px) {
-    .footer-list-wrap {
-      width: 25%;
-    }
-  }
+  // .footer-custom:after {
+  //   display: table;
+  //   clear: both;
+  //   content: "";
+  // }
 
-  .ftr-links-sub {
-    padding: 0;
-    margin: 0;
-  }
+  // .footer-lists:after {
+  //   display: table;
+  //   clear: both;
+  //   content: "";
+  // }
 
-  .ftr-links-sub:after {
-    display: table;
-    clear: both;
-    content: "";
-  }
+  // .ftr-hdr {
+  //   color: #000;
+  //   font: 22px/1.4 "BebasNeueRegular", BebasNeue, "Bebas Neue", Arial, sans-serif;
+  //   margin: 1em 0 0;
+  // }
 
-  .ftr-links-sub li {
-    display: block;
-    list-style-type: none;
-    margin: 0;
-    padding: 3px 0;
-    color: #888;
-    font: normal normal 12px "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-    text-transform: uppercase;
-    /*width: 150px;*/
-  }
+  // @media only screen and (min-width: 768px) {
+  //   .ftr-hdr {
+  //     font-size: 18px;
+  //   }
+  // }
 
-  .footer-custom a,
-  .footer-custom a:link,
-  .footer-custom a:visited,
-  .ftr-links-sub li .link {
-    text-decoration: none;
-    color: #888;
-    padding: 5px 0;
-    display: block;
-  }
+  // .footer-list-wrap {
+  //   width: 50%;
+  //   float: left;
+  //   box-sizing: border-box;
+  // }
 
-  .footer-custom .footer-legal a {
-    display: inline;
-  }
+  // @media only screen and (min-width: 568px) {
+  //   .footer-list-wrap {
+  //     width: 33.3333%;
+  //   }
+  // }
 
-  .footer-custom a:hover,
-  .footer-custom a:active,
-  .ftr-links-sub li .link:hover {
-    text-decoration: underline;
-    color: #888;
-    cursor: pointer;
-  }
+  // @media only screen and (min-width: 768px) {
+  //   .footer-list-wrap {
+  //     width: 25%;
+  //   }
+  // }
 
-  @media only screen and (min-width: 768px) {
-    .footer-custom a,
-    .footer-custom a:link,
-    .footer-custom a:visited,
-    .ftr-links-sub li .link {
-      padding: 0;
-    }
-  }
-  /* BEGIN EMAIL CAPTURE STYLES*/
+  // .ftr-links-sub {
+  //   padding: 0;
+  //   margin: 0;
+  // }
 
-  .footer-email {
-    text-align: center;
-  }
+  // .ftr-links-sub:after {
+  //   display: table;
+  //   clear: both;
+  //   content: "";
+  // }
 
-  #ftrEmailForm {
-    height: 44px;
-  }
+  // .ftr-links-sub li {
+  //   display: block;
+  //   list-style-type: none;
+  //   margin: 0;
+  //   padding: 3px 0;
+  //   color: #888;
+  //   font: normal normal 12px "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  //   text-transform: uppercase;
+  //   /*width: 150px;*/
+  // }
 
-  #ftrEmailForm .error {
-    display: none;
-    color: red;
-    text-align: left;
-  }
+  // .footer-custom a,
+  // .footer-custom a:link,
+  // .footer-custom a:visited,
+  // .ftr-links-sub li .link {
+  //   text-decoration: none;
+  //   color: #888;
+  //   padding: 5px 0;
+  //   display: block;
+  // }
 
-  #ftrEmailForm #ftrEmailInput {
-    background: none repeat scroll 0 0 #fff;
-    border: 1px solid #d6d6d6;
-    box-sizing: border-box;
-    color: #888;
-    float: left;
-    font: normal normal 14px/1.4 "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-    padding: 5px;
-    width: 70%;
-    height: 100%;
-  }
+  // .footer-custom .footer-legal a {
+  //   display: inline;
+  // }
 
-  #ftrEmailForm #ftrEmailInput:hover {
-    border: 1px solid #888;
-  }
+  // .footer-custom a:hover,
+  // .footer-custom a:active,
+  // .ftr-links-sub li .link:hover {
+  //   text-decoration: underline;
+  //   color: #888;
+  //   cursor: pointer;
+  // }
 
-  #ftrEmailForm #ftrEmailInput:focus {
-    border: 1px solid #ef9223;
-    outline: #ef9223 auto 5px;
-  }
+  // @media only screen and (min-width: 768px) {
+  //   .footer-custom a,
+  //   .footer-custom a:link,
+  //   .footer-custom a:visited,
+  //   .ftr-links-sub li .link {
+  //     padding: 0;
+  //   }
+  // }
+  // /* BEGIN EMAIL CAPTURE STYLES*/
 
-  #ftrEmailForm .button {
-    width: 30%;
-    height: 100%;
-    padding: 5px;
-    float: left;
-    border: 1px solid #dfdfdf;
-    box-sizing: border-box;
-    color: #000;
-    font: normal bold 18px/1 BebasFamily, BebasNeueRegular, "Bebas Neue", Helvetica, Arial, sans-serif;
-    text-align: center;
-    text-transform: uppercase;
-    background: #fff;
-    background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJod…EiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, white), color-stop(100%, #e1e1e1));
-    background: -webkit-linear-gradient(top, white 0, #e1e1e1 100%);
-    background: -moz-linear-gradient(top, white 0, #e1e1e1 100%);
-    background: -ms-linear-gradient(top, white 0, #e1e1e1 100%);
-    background: -o-linear-gradient(top, white 0, #e1e1e1 100%);
-    background: linear-gradient(to bottom, white 0, #e1e1e1 100%);
-    cursor: pointer;
-    vertical-align: middle;
-    outline: none;
-  }
+  // .footer-email {
+  //   text-align: center;
+  // }
 
-  #ftrEmailForm .button:hover,
-  #ftrEmailForm .button:active {
-    background: black;
-    color: #fff;
-    outline: none;
-  }
-  /* BEGIN SOCIAL STYLES*/
+  // #ftrEmailForm {
+  //   height: 44px;
+  // }
 
-  .footer-social {
-    text-align: center;
-  }
+  // #ftrEmailForm .error {
+  //   display: none;
+  //   color: red;
+  //   text-align: left;
+  // }
 
-  .footer-social ul {
-    padding: 0;
-    display: inline-block;
-    list-style-type: none;
-  }
+  // #ftrEmailForm #ftrEmailInput {
+  //   background: none repeat scroll 0 0 #fff;
+  //   border: 1px solid #d6d6d6;
+  //   box-sizing: border-box;
+  //   color: #888;
+  //   float: left;
+  //   font: normal normal 14px/1.4 "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  //   padding: 5px;
+  //   width: 70%;
+  //   height: 100%;
+  // }
 
-  .footer-social ul:after {
-    display: table;
-    clear: both;
-    content: "";
-  }
+  // #ftrEmailForm #ftrEmailInput:hover {
+  //   border: 1px solid #888;
+  // }
 
-  .footer-social li {
-    float: left;
-    margin: 0 15px 0 0;
-    padding: 0;
-  }
+  // #ftrEmailForm #ftrEmailInput:focus {
+  //   border: 1px solid #ef9223;
+  //   outline: #ef9223 auto 5px;
+  // }
 
-  @media only screen and (min-width: 768px) {
-    .footer-lists {
-      width: 100%;
-    }
-    .footer-email {
-      width: 50%;
-      float: left;
-      text-align: left;
-    }
-    .footer-social {
-      width: 45%;
-      margin-left: 5%;
-      float: left;
-      text-align: left;
-    }
-  }
+  // #ftrEmailForm .button {
+  //   width: 30%;
+  //   height: 100%;
+  //   padding: 5px;
+  //   float: left;
+  //   border: 1px solid #dfdfdf;
+  //   box-sizing: border-box;
+  //   color: #000;
+  //   font: normal bold 18px/1 BebasFamily, BebasNeueRegular, "Bebas Neue", Helvetica, Arial, sans-serif;
+  //   text-align: center;
+  //   text-transform: uppercase;
+  //   background: #fff;
+  //   background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJod…EiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+  //   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, white), color-stop(100%, #e1e1e1));
+  //   background: -webkit-linear-gradient(top, white 0, #e1e1e1 100%);
+  //   background: -moz-linear-gradient(top, white 0, #e1e1e1 100%);
+  //   background: -ms-linear-gradient(top, white 0, #e1e1e1 100%);
+  //   background: -o-linear-gradient(top, white 0, #e1e1e1 100%);
+  //   background: linear-gradient(to bottom, white 0, #e1e1e1 100%);
+  //   cursor: pointer;
+  //   vertical-align: middle;
+  //   outline: none;
+  // }
 
-  @media only screen and (min-width: 1008px) {
-    .footer-lists {
-      width: 66.6666%;
-      float: left;
-    }
-    .footer-email {
-      width: 33.3333%;
-    }
-    .footer-social {
-      width: 33.3333%;
-      float: right;
-      margin-left: 0;
-    }
-  }
+  // #ftrEmailForm .button:hover,
+  // #ftrEmailForm .button:active {
+  //   background: black;
+  //   color: #fff;
+  //   outline: none;
+  // }
+  // /* BEGIN SOCIAL STYLES*/
 
-  .footer-legal {
-    padding: 15px 0 0;
-    clear: left;
-  }
+  // .footer-social {
+  //   text-align: center;
+  // }
 
-  .footer-payment {
-    text-align: center;
-  }
+  // .footer-social ul {
+  //   padding: 0;
+  //   display: inline-block;
+  //   list-style-type: none;
+  // }
 
-  @media only screen and (min-width: 768px) {
-    .footer-legal {
-      width: 66.6666%;
-      float: left;
-    }
-    .footer-payment {
-      width: 33.3333%;
-      float: left;
-    }
-  }
+  // .footer-social ul:after {
+  //   display: table;
+  //   clear: both;
+  //   content: "";
+  // }
 
-  @media only screen and (min-width: 1008px) {
-    .footer-payment {
-      text-align: left;
-    }
-  }
+  // .footer-social li {
+  //   float: left;
+  //   margin: 0 15px 0 0;
+  //   padding: 0;
+  // }
 
-  .footer-payment ul {
-    padding: 0;
-    display: inline-block;
-    list-style-type: none;
-  }
+  // @media only screen and (min-width: 768px) {
+  //   .footer-lists {
+  //     width: 100%;
+  //   }
+  //   .footer-email {
+  //     width: 50%;
+  //     float: left;
+  //     text-align: left;
+  //   }
+  //   .footer-social {
+  //     width: 45%;
+  //     margin-left: 5%;
+  //     float: left;
+  //     text-align: left;
+  //   }
+  // }
 
-  .footer-payment ul li {
-    display: inline-block;
-    margin: 0 6px;
-  }
+  // @media only screen and (min-width: 1008px) {
+  //   .footer-lists {
+  //     width: 66.6666%;
+  //     float: left;
+  //   }
+  //   .footer-email {
+  //     width: 33.3333%;
+  //   }
+  //   .footer-social {
+  //     width: 33.3333%;
+  //     float: right;
+  //     margin-left: 0;
+  //   }
+  // }
 
-  @media only screen and (min-width: 1008px) {
-    .footer-payment ul li.ftr-stella {
-      margin-left: 0;
-    }
-  }
+  // .footer-legal {
+  //   padding: 15px 0 0;
+  //   clear: left;
+  // }
 
-  .ftr-bbb span,
-  .ftr-stella span {
-    background-image: url("http://cache1.artprintimages.com/images/jump_pages/rebrand2/images/subnav2.png");
-    background-repeat: no-repeat;
-    background-color: transparent;
-    cursor: pointer;
-    display: inline-block;
-    height: 36px;
-    margin: 0;
-    padding: 0;
-  }
+  // .footer-payment {
+  //   text-align: center;
+  // }
 
-  .ftr-bbb span {
-    background-position: -339px -8px;
-    width: 96px;
-  }
+  // @media only screen and (min-width: 768px) {
+  //   .footer-legal {
+  //     width: 66.6666%;
+  //     float: left;
+  //   }
+  //   .footer-payment {
+  //     width: 33.3333%;
+  //     float: left;
+  //   }
+  // }
 
-  .ftr-stella span {
-    background-position: -339px -107px;
-    width: 57px;
-  }
+  // @media only screen and (min-width: 1008px) {
+  //   .footer-payment {
+  //     text-align: left;
+  //   }
+  // }
+
+  // .footer-payment ul {
+  //   padding: 0;
+  //   display: inline-block;
+  //   list-style-type: none;
+  // }
+
+  // .footer-payment ul li {
+  //   display: inline-block;
+  //   margin: 0 6px;
+  // }
+
+  // @media only screen and (min-width: 1008px) {
+  //   .footer-payment ul li.ftr-stella {
+  //     margin-left: 0;
+  //   }
+  // }
+
+  // .ftr-bbb span,
+  // .ftr-stella span {
+  //   background-image: url("http://cache1.artprintimages.com/images/jump_pages/rebrand2/images/subnav2.png");
+  //   background-repeat: no-repeat;
+  //   background-color: transparent;
+  //   cursor: pointer;
+  //   display: inline-block;
+  //   height: 36px;
+  //   margin: 0;
+  //   padding: 0;
+  // }
+
+  // .ftr-bbb span {
+  //   background-position: -339px -8px;
+  //   width: 96px;
+  // }
+
+  // .ftr-stella span {
+  //   background-position: -339px -107px;
+  //   width: 57px;
+  // }
 }
 </style>
