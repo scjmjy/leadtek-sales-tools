@@ -138,7 +138,7 @@ function checkPassOrder(record: OrderRecordItem) {
             <div class="record__list__sales">
               <div>
                 <div>原价：{{ record.price }} 元</div>
-                <div>折扣：{{ record.discount }}</div>
+                <div>折扣：{{ record.discount === 1 ? "无" : record.discount }}</div>
                 <div>总金额：{{ record.offer }} 元</div>
               </div>
               <div style="margin-top: 20px">

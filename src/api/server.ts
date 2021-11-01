@@ -163,8 +163,14 @@ export function requestTemplateDetail(id: number): Promise<ServerTemplateDetail>
   return http.request("get", "/api/v1/biz/template/" + id);
 }
 
-export function requestLatestRecordList(): Promise<OrderRecordItem[]> {
-  return http.request("get", "/api/v1/biz/latestrecords");
+export async function requestLatestRecordList(): Promise<OrderRecordItem[]> {
+  const data = await http.request<OrderRecordItem[]>("get", "/api/v1/biz/latestrecords");
+  const items = (data || []).map(item => {
+    const recordItem = new OrderRecordItem();
+    Object.assign(recordItem, item);
+    return recordItem;
+  });
+  return items;
 }
 
 export function requestRecordList(page = 1): Promise<OrderRecordItem[]> {

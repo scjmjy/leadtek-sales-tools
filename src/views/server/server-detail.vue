@@ -26,9 +26,11 @@
             <div class="server-detail__manifest-title">当前配置清单</div>
             <ul v-if="selectedComponents.length" class="server-detail__manifest-list">
               <li v-for="(com, index) in selectedComponents" :key="index" class="manifest-item">
-                <span class="manifest-item__count">{{ com.count }}</span>
-                <span class="manifest-item__x">×</span>
-                <span class="manifest-item__name">
+                <template v-if="index !== 0">
+                  <span class="manifest-item__count">{{ com.count }}</span>
+                  <span class="manifest-item__x">×</span>
+                </template>
+                <span class="manifest-item__name" :class="{ 'is-host': index === 0 }">
                   {{ com.name }}
                 </span>
               </li>
@@ -165,7 +167,22 @@ const serverModules = computed<ServerModule[]>(() => {
 });
 const selectedModules = ref<ServerModule[]>([]);
 const selectedComponents = computed(() => {
-  const coms: ComponentDetail[] = [];
+  if (!serverDetail.value) {
+    return [];
+  }
+  const { id, price, name } = serverDetail.value;
+  const coms: ComponentDetail[] = [
+    {
+      id,
+      name,
+      price: price || 0,
+      stock: 1, // 库存状态（1：有货；0：无货）
+      desc: "",
+      priority: 0,
+      multiple: false, // 是否可以选择个数
+      count: 1 // 个数
+    }
+  ];
   selectedModules.value.forEach(module => {
     coms.push(...module.components);
   });
@@ -291,6 +308,7 @@ function submitConfigure() {
         }
       }
       .manifest-item {
+        margin: 3px 0;
         &__count {
           color: var(--el-color-primary);
           font-weight: bold;
@@ -302,6 +320,9 @@ function submitConfigure() {
         &__name {
           color: var(--el-color-info);
           font-weight: bold;
+          &.is-host {
+            color: #6124fb;
+          }
         }
       }
     }

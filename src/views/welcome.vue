@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { shallowRef } from "vue";
 import { useRouter } from "vue-router";
-import { requestLatestRecordList, requestServerTemplates, ServerTemplate, OrderRecordItem, OrderRecordStatusTags } from "../api/server";
+import { requestLatestRecordList, requestServerTemplates, ServerTemplate, OrderRecordItem } from "../api/server";
 
 const router = useRouter();
 
@@ -12,9 +12,9 @@ requestServerTemplates().then(res => {
 const recordList = shallowRef<OrderRecordItem[]>([]);
 requestLatestRecordList().then(res => {
   recordList.value = res || [];
-  recordList.value.forEach(item => {
-    item.statusTag = OrderRecordStatusTags[item.status];
-  });
+  // recordList.value.forEach(item => {
+  //   item.statusTag = OrderRecordStatusTags[item.status];
+  // });
 });
 function onRecordRowClick(row: OrderRecordItem) {
   router.push("/record?id=" + row.id);
@@ -52,15 +52,27 @@ function chooseTempalte(item: ServerTemplate) {
         </el-table-column>
         <el-table-column label="记录号" prop="no" align="center"></el-table-column>
         <el-table-column label="主机信息" prop="fname" align="center"></el-table-column>
-        <el-table-column label="组件信息" prop="components" align="center">
+        <el-table-column label="组件信息" prop="components" align="left">
           <template #default="scope">
             <div style="white-space: pre; text-align: left">
               {{ scope.row.components.join("\n") }}
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="价格信息" prop="price" align="center"></el-table-column>
-        <el-table-column label="客户信息" prop="name" align="center"></el-table-column>
+        <el-table-column label="价格信息" prop="price" align="left">
+          <template #default="{ row }">
+            <div>原价：{{ row.price }} 元</div>
+            <div>折扣：{{ row.discount === 1 ? "无" : row.discount }}</div>
+            <div>总金额：{{ row.offer }} 元</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="客户信息" prop="name" align="left">
+          <template #default="{ row }">
+            <div>客户：{{ row.name }}</div>
+            <div>联系人：{{ row.contact || "-" }}</div>
+            <div>手机号：{{ row.mobile || "-" }}</div>
+          </template>
+        </el-table-column>
         <el-table-column label="状态信息" prop="state" align="center">
           <template #default="scope">
             <el-tag size="medium" :type="scope.row.statusTag.type">{{ scope.row.statusTag.label }}</el-tag>
