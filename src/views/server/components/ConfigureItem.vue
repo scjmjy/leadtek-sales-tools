@@ -9,23 +9,19 @@ defineProps<{
 </script>
 
 <template>
-  <el-checkbox v-if="group.multiple" class="configure-item" :label="component.id">
+  <el-checkbox v-if="group.multiple" class="configure-item" :class="{ 'is-no-stock': component.stock === 0 }" :label="component.id">
     <span v-if="!component.multiple" class="configure-item__count">{{ component.count || 1 }}</span>
-    <el-select v-else :model-value="modelValue" v-bind="$attrs" @click.prevent="">
-      <el-option label="4" :value="4"></el-option>
-      <el-option label="2" :value="2"></el-option>
-      <el-option label="1" :value="1"></el-option>
+    <el-select v-else :model-value="modelValue" v-bind="$attrs" :disabled="component.stock === 0" @click.prevent="">
+      <el-option v-for="index in 10" :key="index" :label="index" :value="index"></el-option>
     </el-select>
     <span class="configure-item__x">×</span>
     <span class="configure-item__name">{{ component.name }}</span>
     <span class="configure-item__price">{{ `(${component.price} RMB)` }}</span>
   </el-checkbox>
-  <el-radio v-else class="configure-item" :label="component.id">
+  <el-radio v-else class="configure-item" :class="{ 'is-no-stock': component.stock === 0 }" :label="component.id">
     <span v-if="!component.multiple" class="configure-item__count">{{ component.count || 1 }}</span>
-    <el-select v-else :model-value="modelValue" v-bind="$attrs" @click.prevent="">
-      <el-option label="4" :value="4"></el-option>
-      <el-option label="2" :value="2"></el-option>
-      <el-option label="1" :value="1"></el-option>
+    <el-select v-else :model-value="modelValue" v-bind="$attrs" :disabled="component.stock === 0" @click.prevent="">
+      <el-option v-for="index in 10" :key="index" :label="index" :value="index"></el-option>
     </el-select>
     <span class="configure-item__x">×</span>
     <span class="configure-item__name">{{ component.name }}</span>
@@ -37,6 +33,10 @@ defineProps<{
 .configure-item {
   margin: 5px 0px;
   width: 100%;
+
+  &.is-no-stock {
+    text-decoration: line-through;
+  }
   :deep(.el-input) {
     height: auto;
     line-height: 30px;
@@ -69,5 +69,10 @@ defineProps<{
     margin-left: 5px;
     color: var(--el-color-warning);
   }
+  // &__stock {
+  //   margin-left: 5px;
+  //   color: var(--el-color-danger);
+  //   text-decoration: unset !important;
+  // }
 }
 </style>

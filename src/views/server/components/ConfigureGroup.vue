@@ -4,12 +4,13 @@ import { ServerModule } from "/@/api/server";
 
 defineProps<{
   modules: ServerModule[];
+  disabled: boolean;
 }>();
 </script>
 
 <template>
   <el-card class="configure-group">
-    <configure v-for="item of modules" :key="item.name" :module="item"></configure>
+    <configure v-for="item of modules" :key="item.name" :module="item" :disabled="disabled"></configure>
   </el-card>
 </template>
 

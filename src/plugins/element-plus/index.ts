@@ -1,5 +1,6 @@
 import { App, Component } from "vue";
 import {
+  ElAutocomplete,
   ElTag,
   ElAffix,
   ElSkeleton,
@@ -50,6 +51,7 @@ import {
 } from "element-plus";
 
 const components = [
+  ElAutocomplete,
   ElTag,
   ElAffix,
   ElSkeleton,

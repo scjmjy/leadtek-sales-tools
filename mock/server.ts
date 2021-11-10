@@ -56,7 +56,7 @@ const recordRes = {
       components: "@ctitle",
       price: "@ctitle",
       customer: "@cname",
-      "state|1": ["LOCAL", "SUBMIT", "CHECK_PASS"]
+      "state|1": ["LOCAL", "SUBMIT", "PRICE_CHECK_PASS"]
     }
   ]
 };

@@ -1,7 +1,8 @@
-@import "./mixin.scss";
-@import "./transition.scss";
-@import "./element-plus.scss";
-@import "./sidebar.scss";
+@use "./mixin.scss";
+@use "./transition.scss";
+@use "./element-variables.scss";
+@use "./element-plus.scss";
+@use "./sidebar.scss";
 
 body {
   width: 100%;

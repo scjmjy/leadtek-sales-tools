@@ -1,14 +1,22 @@
 <template>
-  <el-dialog custom-class="order-dlg" title="填写客户信息" width="500px" :close-on-click-modal="false" :close-on-press-escape="false" :model-value="modelValue" destroy-on-close v-bind="$attrs">
+  <el-dialog custom-class="order-dlg" :title="title" width="500px" :close-on-click-modal="false" :close-on-press-escape="false" :model-value="modelValue" destroy-on-close v-bind="$attrs">
     <el-form ref="elForm" :model="formData" :rules="formRules" label-width="100px" label-position="right" @validate="onValidate">
       <el-form-item label="客户姓名" prop="name">
-        <el-input v-model="formData.name"></el-input>
+        <!-- <el-input v-model="formData.name"></el-input> -->
+        <el-autocomplete v-model="formData.name" :fetch-suggestions="querySearchAsync" placeholder="请输入客户姓名" style="width: 100%" @select="handleSelect">
+          <template #default="{ item }">
+            <div>{{ item.name }}</div>
+          </template>
+        </el-autocomplete>
       </el-form-item>
       <el-form-item label="联系人" prop="contact">
         <el-input v-model="formData.contact"></el-input>
       </el-form-item>
       <el-form-item label="手机号" prop="mobile">
         <el-input v-model="formData.mobile"></el-input>
+      </el-form-item>
+      <el-form-item label="邮箱" prop="email">
+        <el-input v-model="formData.email"></el-input>
       </el-form-item>
       <el-form-item label="地址" prop="address">
         <el-input v-model="formData.address"></el-input>
@@ -35,7 +43,7 @@
 <script lang="ts">
 import { computed, defineComponent, reactive, ref, PropType } from "vue";
 import { ElForm, ElMessage } from "element-plus";
-import { CustomerInfo } from "/@/api/server";
+import { CustomerInfo, requestCustomerList } from "/@/api/server";
 import { useAppStoreHook } from "/@/store/modules/app";
 
 export type OrderFunc = (customer: CustomerInfo, done: (success: boolean) => void) => void;
@@ -50,6 +58,10 @@ export default defineComponent({
     order: {
       type: Function as PropType<OrderFunc>,
       required: true
+    },
+    title: {
+      type: String,
+      default: "填写客户信息"
     }
   },
   setup(props, ctx) {
@@ -69,6 +81,18 @@ export default defineComponent({
       }
       return opts;
     });
+    function querySearchAsync(queryString: string, cb: (arg?: any) => void) {
+      requestCustomerList(queryString)
+        .then(res => {
+          cb(res);
+        })
+        .catch(() => {
+          cb(undefined);
+        });
+    }
+    function handleSelect(item) {
+      Object.assign(formData, item);
+    }
     const elForm = ref<InstanceType<typeof ElForm>>();
     const formData = reactive(new CustomerInfo());
     const formRules = computed(() => ({
@@ -83,6 +107,8 @@ export default defineComponent({
     return {
       loading,
       pmethodOpts,
+      querySearchAsync,
+      handleSelect,
       elForm,
       formData,
       formRules,

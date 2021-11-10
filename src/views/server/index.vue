@@ -9,7 +9,7 @@ const router = useRouter();
 const route = useRoute();
 const serverType = ref(route.query.isStation ? ServerType.Station : ServerType.Server);
 const serverTypeText = computed(() => (serverType.value === ServerType.Server ? "服务器列表" : "工作站列表"));
-const title = computed(() => (serverType.value === ServerType.Server ? "服务器" : "工作站"));
+// const title = computed(() => (serverType.value === ServerType.Server ? "服务器" : "工作站"));
 const serverList = ref<Server[]>([]);
 
 function requestServerListWrapper(page: number) {
@@ -25,7 +25,7 @@ function configure(item: Server) {
 
 <template>
   <div class="server">
-    <el-card class="server__header">
+    <!-- <el-card class="server__header">
       <el-row :gutter="20">
         <el-col :span="4">
           <vue-fixed-ratio :width="1" :height="1">
@@ -39,12 +39,12 @@ function configure(item: Server) {
           </div>
         </el-col>
       </el-row>
-    </el-card>
+    </el-card> -->
 
     <div class="server__list">
       <div class="server__list-title">{{ serverTypeText }}</div>
       <el-row class="server__list-list" :gutter="20" v-infinite-scroll="pageScroll.requestPageIfAllowed.bind(pageScroll)" :infinite-scroll-disabled="pageScroll.loadState.value === 'nomore'">
-        <el-col :xs="24" :md="12" :lg="8" :xl="6" v-for="server of serverList" :key="server.id" style="margin: 5px 0">
+        <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="4" v-for="server of serverList" :key="server.id" style="margin: 5px 0">
           <el-card>
             <template #header>
               <div class="card-header">
@@ -56,9 +56,8 @@ function configure(item: Server) {
             <vue-fixed-ratio :width="1" :height="1">
               <img :src="server.pic" style="width: 100%; height: 100%; object-fit: contain" />
             </vue-fixed-ratio>
-            <!-- <el-image :src="server.pic"></el-image> -->
             <div class="card-desc">
-              <div v-for="(desc, index) of server.features" :key="index">{{ desc }}</div>
+              {{ server.desc }}
             </div>
           </el-card>
         </el-col>
@@ -101,12 +100,13 @@ function configure(item: Server) {
       }
       .card-desc {
         margin-top: 5px;
-        color: var(--el-color-info);
+        min-height: 40px;
+        color: var(--el-text-color-primary);
         text-align: center;
       }
-      :deep(.el-card__header) {
-        // padding: 5px 20px;
-      }
+      // :deep(.el-card__header) {
+      //   // padding: 5px 20px;
+      // }
     }
   }
 }

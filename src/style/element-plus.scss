@@ -59,3 +59,9 @@
 .el-table {
   --el-table-background-color: #ffffffb0;
 }
+
+.el-message-box {
+  &__message {
+    white-space: pre;
+  }
+}
