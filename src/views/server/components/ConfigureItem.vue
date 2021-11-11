@@ -1,26 +1,28 @@
 <script setup lang="ts">
+import { computed } from "vue";
 import { ComponentDetail, ServerModule } from "/@/api/server";
 
-defineProps<{
+const props = defineProps<{
   group: ServerModule;
   component: ComponentDetail;
   modelValue: number;
 }>();
+const disabled = computed(() => props.component.stock === 0);
 </script>
 
 <template>
-  <el-checkbox v-if="group.multiple" class="configure-item" :class="{ 'is-no-stock': component.stock === 0 }" :label="component.id">
+  <el-checkbox v-if="group.multiple" class="configure-item" :class="{ 'is-no-stock': disabled }" :label="component.id">
     <span v-if="!component.multiple" class="configure-item__count">{{ component.count || 1 }}</span>
-    <el-select v-else :model-value="modelValue" v-bind="$attrs" :disabled="component.stock === 0" @click.prevent="">
+    <el-select v-else :model-value="modelValue" v-bind="$attrs" :disabled="disabled" @click.prevent="">
       <el-option v-for="index in 10" :key="index" :label="index" :value="index"></el-option>
     </el-select>
     <span class="configure-item__x">×</span>
     <span class="configure-item__name">{{ component.name }}</span>
     <span class="configure-item__price">{{ `(${component.price} RMB)` }}</span>
   </el-checkbox>
-  <el-radio v-else class="configure-item" :class="{ 'is-no-stock': component.stock === 0 }" :label="component.id">
+  <el-radio v-else class="configure-item" :class="{ 'is-no-stock': disabled }" :label="component.id">
     <span v-if="!component.multiple" class="configure-item__count">{{ component.count || 1 }}</span>
-    <el-select v-else :model-value="modelValue" v-bind="$attrs" :disabled="component.stock === 0" @click.prevent="">
+    <el-select v-else :model-value="modelValue" v-bind="$attrs" :disabled="disabled" @click.prevent="">
       <el-option v-for="index in 10" :key="index" :label="index" :value="index"></el-option>
     </el-select>
     <span class="configure-item__x">×</span>

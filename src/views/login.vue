@@ -19,8 +19,8 @@ const refreshGetVerify = async () => {
 };
 
 const contextInfo: ContextProps = reactive({
-  userName: "wang",
-  passWord: "123456",
+  userName: "",
+  passWord: "",
   verify: null,
   svg: null
 });

@@ -56,19 +56,20 @@
       </el-row>
 
       <order-dlg v-model="showOrderDlg" :title="orderDlgTitle" :order="order"></order-dlg>
+      <out-of-stock-dlg v-model="showOutOfStockDlg" :coms="outOfStockComs" />
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ElMessage, ElMessageBox } from "element-plus";
+import { ElMessage } from "element-plus";
 import { computed, provide, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import ConfigureGroup from "./components/ConfigureGroup.vue";
 import OrderDlg, { OrderFunc } from "./components/OrderDlg.vue";
+import OutOfStockDlg from "./components/OutOfStockDlg.vue";
 import { SelectComponentFunc } from "./types";
 import { requestServerDetail, ServerModule, ServerDetail, ComponentDetail, recordOrder, OrderRecordCreate, OrderRecordStatus, requestTemplateDetail, ComponentItem, requestRecordDetail, TempComponent } from "/@/api/server";
-// import { useAppStoreHook } from "/@/store/modules/app";
 
 const route = useRoute();
 const router = useRouter();
@@ -310,21 +311,21 @@ provide<SelectComponentFunc>("selectComponent", function ({ moduleId, components
   selectedModules.value.sort((a, b) => b.priority - a.priority);
 });
 
+const outOfStockComs = ref<ComponentDetail[]>([]);
+const showOutOfStockDlg = ref(false);
+
 async function checkStock() {
-  const outOfStockComs: string[] = [];
+  const coms = outOfStockComs.value;
+  coms.length = 0;
   for (const module of selectedModules.value) {
     module.components.forEach(com => {
       if (com.stock === 0) {
-        outOfStockComs.push(com.name);
+        coms.push(com);
       }
     });
   }
-  if (outOfStockComs.length) {
-    let msg = ["以下组件没有库存了："];
-    msg = msg.concat(outOfStockComs);
-    await ElMessageBox.alert(msg.join("\n"), "温馨提示", {
-      cancelButtonText: "取消操作"
-    });
+  if (coms.length) {
+    showOutOfStockDlg.value = true;
     return Promise.reject();
   } else {
     return;

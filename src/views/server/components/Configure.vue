@@ -46,7 +46,7 @@ function onRadioChange(value: number) {
   });
 }
 function onRadioGroupClick(e: Event) {
-  if (selected.value && props.module.components.length === 1) {
+  if (!props.disabled && selected.value && props.module.components.length === 1) {
     if (!props.module.required) {
       selected.value = undefined;
       onRadioChange(undefined);
