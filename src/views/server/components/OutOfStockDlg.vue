@@ -2,10 +2,10 @@
   <el-dialog title="温馨提示" width="500px" :model-value="modelValue" destroy-on-close v-bind="$attrs">
     <div class="out-of-stock__title">以下组件没有库存了：</div>
     <ul class="out-of-stock__list">
-      <li v-for="(com, index) in coms" :key="index" class="out-of-stock__list__item">
-        <span class="out-of-stock__list__item__count">{{ com.count }}</span>
-        <span class="out-of-stock__list__item__x">×</span>
-        <span class="out-of-stock__list__item__name">
+      <li v-for="(com, index) in coms" :key="index" class="out-of-stock__item">
+        <span class="out-of-stock__count">{{ com.count }}</span>
+        <span class="out-of-stock__x">×</span>
+        <span class="out-of-stock__name">
           {{ com.name }}
         </span>
       </li>
@@ -54,21 +54,21 @@ export default defineComponent({
     &::marker {
       color: #6124fb;
     }
-    &__item {
-      margin: 3px 0;
-      &__count {
-        color: var(--el-color-primary);
-        font-weight: bold;
-      }
-      &__x {
-        color: var((--el-color-info));
-        margin: 0 5px;
-      }
-      &__name {
-        color: var(--el-color-info);
-        font-weight: bold;
-      }
-    }
+  }
+  &__item {
+    margin: 3px 0;
+  }
+  &__count {
+    color: var(--el-color-primary);
+    font-weight: bold;
+  }
+  &__x {
+    color: var((--el-color-info));
+    margin: 0 5px;
+  }
+  &__name {
+    color: var(--el-color-info);
+    font-weight: bold;
   }
 }
 </style>
