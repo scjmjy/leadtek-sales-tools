@@ -6,7 +6,7 @@
     "dev": "cross-env --max_old_space_size=4096 vite",
     "serve": "yarn dev",
     "build": "rimraf dist && cross-env vite build",
-    "build2": "rimraf dist && cross-env vite build && zip -r leadtek-sales-tools-frontend.zip dist/*",
+    "build-zip": "rimraf dist && cross-env vite build && (rm leadtek-sales-tools-frontend.zip ; zip -r leadtek-sales-tools-frontend.zip dist/*)",
     "preview": "vite preview",
     "preview:build": "yarn build && vite preview",
     "clean:cache": "rm -rf node_modules && rm -rf .eslintcache && yarn cache clean && yarn",
