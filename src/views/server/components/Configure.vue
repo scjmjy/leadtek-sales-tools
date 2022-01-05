@@ -50,7 +50,7 @@ function onRadioGroupClick(e: Event) {
     if (!props.module.required) {
       selected.value = undefined;
       onRadioChange(undefined);
-      e.stopPropagation();
+      // e.stopPropagation();
       e.preventDefault();
     } else {
       showTooltip();

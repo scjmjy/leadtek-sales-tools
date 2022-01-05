@@ -32,6 +32,7 @@ export interface ComponentDetail {
   desc: string;
   priority: number;
   multiple: boolean; // 是否可以选择个数
+  options: ""; // semicolon-separated select list
 
   count: number; // 个数
 }

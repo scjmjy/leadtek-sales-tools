@@ -8,13 +8,20 @@ const props = defineProps<{
   modelValue: number;
 }>();
 const disabled = computed(() => props.component.stock === 0);
+const options = computed(() => {
+  const opts = (props.component.options || "").split(";").filter(item => !!item);
+  return opts.map(item => ({
+    label: item,
+    value: +item
+  }));
+});
 </script>
 
 <template>
   <el-checkbox v-if="group.multiple" class="configure-item" :class="{ 'is-no-stock': disabled }" :label="component.id">
     <span v-if="!component.multiple" class="configure-item__count">{{ component.count || 1 }}</span>
     <el-select v-else :model-value="modelValue" v-bind="$attrs" :disabled="disabled" @click.prevent="">
-      <el-option v-for="index in 10" :key="index" :label="index" :value="index"></el-option>
+      <el-option v-for="opt of options" :key="opt.value" :label="opt.label" :value="opt.value"></el-option>
     </el-select>
     <span class="configure-item__x">×</span>
     <span class="configure-item__name">{{ component.name }}</span>
@@ -23,11 +30,13 @@ const disabled = computed(() => props.component.stock === 0);
   <el-radio v-else class="configure-item" :class="{ 'is-no-stock': disabled }" :label="component.id">
     <span v-if="!component.multiple" class="configure-item__count">{{ component.count || 1 }}</span>
     <el-select v-else :model-value="modelValue" v-bind="$attrs" :disabled="disabled" @click.prevent="">
-      <el-option v-for="index in 10" :key="index" :label="index" :value="index"></el-option>
+      <el-option v-for="opt of options" :key="opt.value" :label="opt.label" :value="opt.value"></el-option>
     </el-select>
-    <span class="configure-item__x">×</span>
-    <span class="configure-item__name">{{ component.name }}</span>
-    <span class="configure-item__price">{{ `(${component.price} RMB)` }}</span>
+    <span>
+      <span class="configure-item__x">×</span>
+      <span class="configure-item__name">{{ component.name }}</span>
+      <span class="configure-item__price">{{ `(${component.price} RMB)` }}</span>
+    </span>
   </el-radio>
 </template>
 
