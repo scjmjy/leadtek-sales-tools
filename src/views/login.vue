@@ -78,5 +78,6 @@ onBeforeMount(() => {
 <template>
   <div class="login">
     <info :loading="loading" :ruleForm="contextInfo" @on-behavior="onLogin" @refreshVerify="refreshVerify" />
+    <a class="login-beian" href="https://beian.miit.gov.cn/" target="_blank">沪ICP备11000735号-2</a>
   </div>
 </template>

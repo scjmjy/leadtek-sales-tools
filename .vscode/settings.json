@@ -9,7 +9,7 @@
   "terminal.integrated.rendererType": "dom",
   "editor.formatOnType": true,
   "editor.formatOnSave": true,
-  "window.zoomLevel": 1,
+  "window.zoomLevel": 0,
   "javascript.updateImportsOnFileMove.enabled": "always",
   "[vue]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"

@@ -12,8 +12,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB,
-    Microsoft YaHei, Arial, sans-serif;
+  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
 }
 
 html {
@@ -78,6 +77,16 @@ ul {
   overflow-x: hidden;
   background: url("../assets/bg.png") no-repeat center;
   background-size: cover;
+}
+.login {
+  &-beian {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    color: rgb(194, 183, 183);
+  }
 }
 
 /* 头部用户信息样式重置 */
